@@ -53,11 +53,6 @@ public OnPluginStart()
     RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
 }
 
-public Action:Command_Test(client, args)
-{
-    return Plugin_Handled;
-}
-
 public OnGameFrame()
 {
     if(AreJetpacksEnabled())
@@ -73,6 +68,34 @@ public OnGameFrame()
         }
 
     }
+}
+
+public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon, &subtype, &cmdnum, &tickcount, &seed, mouse[2])
+{
+    if(!AreJetpacksEnabled) return Plugin_Continue;
+
+    if(buttons & IN_JUMP && !IsClientUsingJetpack(client))
+    {
+        //TODO send player id, not client id
+        CreateTimer(0.2, HeldJump, client);
+    }
+}
+
+//Call back for when a player presses jump.  Checks if jump is still held down
+public Action:HeldJump(Handle:timer, any:client)
+{
+    //TODO retrieve client id from player id
+    if(!IsClientInGame(client)) return Plugin_Continue;
+
+    if(buttons & IN_JUMP)
+    {
+        StartJetpack(client);
+    }
+}
+
+public Action:Command_Test(client, args)
+{
+    return Plugin_Handled;
 }
 
 bool:IsClientUsingJetpack(client)
