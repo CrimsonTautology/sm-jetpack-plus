@@ -1,0 +1,22 @@
+"Phrases"
+{
+    "phrase_1"
+    {
+        "#format"   "{1:s}"
+            "en"    "[SM] TODO \"{1}\"."
+    }
+
+    "phrase_2"
+    {
+        "#format"   "{1:s},{2:i},{3:s}"
+            "en"    "[SM] TODO{1}{2}{3}."
+    }
+
+    "phrase_3"
+    {
+        "en"    "TODO"
+    }
+
+
+}
+

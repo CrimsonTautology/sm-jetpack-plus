@@ -1,0 +1,7 @@
+#compiled files
+*.smx
+*.exe
+*.o
+
+#vim files
+*.sw*
