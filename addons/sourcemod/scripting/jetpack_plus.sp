@@ -53,6 +53,11 @@ public OnPluginStart()
     RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
 }
 
+public OnClientDisconnect(client)
+{
+    StopJetpack(client);
+}
+
 public OnGameFrame()
 {
     if(AreJetpacksEnabled())
