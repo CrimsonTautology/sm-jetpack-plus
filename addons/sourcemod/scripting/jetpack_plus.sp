@@ -28,6 +28,9 @@ public Plugin:myinfo =
 
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
 
+new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
+
+
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
     if (LibraryExists("jetpack_plus"))
@@ -53,4 +56,46 @@ public OnPluginStart()
 public Action:Command_Test(client, args)
 {
     return Plugin_Handled;
+}
+
+public OnGameFrame()
+{
+    if(AreJetpacksEnabled())
+    {
+        for (new client=1; client <= MaxClients; client++)
+        {
+            //For each client using a jetpack
+            if(IsClientUsingJetpack(client))
+            {
+                JetpackStep(client);
+            }
+
+        }
+
+    }
+}
+
+bool:IsClientUsingJetpack(client)
+{
+    return g_IsUsingJetpack[client];
+}
+
+bool:AreJetpacksEnabled()
+{
+    return GetConVarBool(g_Cvar_Enabled);
+}
+
+StartJetpack(client)
+{
+    g_IsUsingJetpack[client] = true;
+}
+
+//Called each frame a client is using a jetpack
+JetpackStep(client)
+{
+}
+
+StopJetpack(client)
+{
+    g_IsUsingJetpack[client] = false;
 }
