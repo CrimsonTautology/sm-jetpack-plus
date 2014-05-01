@@ -12,6 +12,7 @@
 #pragma semicolon 1
 
 #include <sourcemod>
+#include <smlib/entities>
 #include <jetpack_plus>
 
 #define PLUGIN_VERSION "0.1"
@@ -118,12 +119,21 @@ StartJetpack(client)
     g_IsUsingJetpack[client] = true;
 }
 
-//Called each frame a client is using a jetpack
-JetpackStep(client)
-{
-}
-
 StopJetpack(client)
 {
     g_IsUsingJetpack[client] = false;
+}
+
+//Called each frame a client is using a jetpack
+JetpackStep(client)
+{
+    JetpackPush(client, 100.0)
+}
+
+JetpackPush(client, Float:force)
+{
+    new Float:vec[3];
+    Entity_GetLocalVelocity(client, vec)
+    vec[2] += force;
+    Entity_SetLocalVelocity(client, vec)
 }
