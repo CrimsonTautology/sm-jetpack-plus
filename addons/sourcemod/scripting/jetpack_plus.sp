@@ -127,7 +127,14 @@ StopJetpack(client)
 //Called each frame a client is using a jetpack
 JetpackStep(client)
 {
-    JetpackPush(client, 100.0)
+    if(IsPlayerAlive(client))
+    {
+        JetpackPush(client, 100.0)
+    }
+    else
+    {
+        StopJetpack(client);
+    }
 }
 
 JetpackPush(client, Float:force)
