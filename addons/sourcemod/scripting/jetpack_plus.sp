@@ -86,7 +86,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
         CreateTimer(0.2, HeldJump, client);
     }
     
-    return Plugin_Continue
+    return Plugin_Continue;
 }
 
 //Call back for when a player presses jump.  Checks if jump is still held down
