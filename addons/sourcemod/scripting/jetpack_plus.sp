@@ -78,25 +78,29 @@ public OnGameFrame()
 
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon, &subtype, &cmdnum, &tickcount, &seed, mouse[2])
 {
-    if(!AreJetpacksEnabled) return Plugin_Continue;
+    if(!AreJetpacksEnabled()) return Plugin_Continue;
 
     if(buttons & IN_JUMP && !IsClientUsingJetpack(client))
     {
         //TODO send player id, not client id
         CreateTimer(0.2, HeldJump, client);
     }
+    
+    return Plugin_Continue
 }
 
 //Call back for when a player presses jump.  Checks if jump is still held down
 public Action:HeldJump(Handle:timer, any:client)
 {
     //TODO retrieve client id from player id
-    if(!IsClientInGame(client)) return Plugin_Continue;
+    if(!IsClientInGame(client)) return Plugin_Handled;
 
-    if(buttons & IN_JUMP)
+    if(GetClientButtons(client) & IN_JUMP)
     {
         StartJetpack(client);
     }
+
+    return Plugin_Handled;
 }
 
 public Action:Command_Test(client, args)
@@ -129,7 +133,7 @@ JetpackStep(client)
 {
     if(IsPlayerAlive(client))
     {
-        JetpackPush(client, 100.0)
+        JetpackPush(client, 100.0);
     }
     else
     {
@@ -140,7 +144,7 @@ JetpackStep(client)
 JetpackPush(client, Float:force)
 {
     new Float:vec[3];
-    Entity_GetLocalVelocity(client, vec)
+    Entity_GetLocalVelocity(client, vec);
     vec[2] += force;
-    Entity_SetLocalVelocity(client, vec)
+    Entity_SetLocalVelocity(client, vec);
 }
