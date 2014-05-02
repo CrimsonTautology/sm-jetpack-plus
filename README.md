@@ -1,5 +1,5 @@
 # Jetpack Plus
-[![Build Status](https://travis-ci.org/CrimsonTautology/sm_map_votes.png?branch=master)](https://travis-ci.org/CrimsonTautology/sm_jetpack_plus)
+[![Build Status](https://travis-ci.org/CrimsonTautology/sm_jetpack_plus.svg?branch=master)](https://travis-ci.org/CrimsonTautology/sm_jetpack_plus)
 
 TODO: Describe Plugin
 
