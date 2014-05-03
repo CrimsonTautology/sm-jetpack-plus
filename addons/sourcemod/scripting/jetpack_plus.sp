@@ -57,8 +57,8 @@ public OnPluginStart()
     g_Cvar_Enabled = CreateConVar("sm_jetpack_enabled", "1", "Enabled");
 
     RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
-    RegConsoleCmd("+sm_jetpack", Command_JetpackStart, "", FCVAR_GAMEDLL);
-    RegConsoleCmd("-sm_jetpack", Command_JetpackStop,  "", FCVAR_GAMEDLL);
+    //RegConsoleCmd("+sm_jetpack", Command_JetpackStart, "", FCVAR_GAMEDLL); //TODO remove
+    //RegConsoleCmd("-sm_jetpack", Command_JetpackStop,  "", FCVAR_GAMEDLL);
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
@@ -93,7 +93,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     if(buttons & IN_JUMP && !IsClientUsingJetpack(client))
     {
         //TODO send player id, not client id
-        //CreateTimer(0.2, HeldJump, client);
+        CreateTimer(0.2, HeldJump, client);
     }
 
     return Plugin_Continue;
@@ -157,7 +157,8 @@ StopJetpack(client)
 //Called each frame a client is using a jetpack
 JetpackStep(client)
 {
-    if(IsPlayerAlive(client))
+    new buttons = GetClientButtons(client);
+    if(IsPlayerAlive(client) && (buttons & IN_JUMP))
     {
         JetpackPush(client, 8.0);
     }
