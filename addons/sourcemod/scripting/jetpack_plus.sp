@@ -17,6 +17,9 @@
 
 #define PLUGIN_VERSION "0.1"
 
+#define MOVECOLLIDE_DEFAULT		0
+#define MOVECOLLIDE_FLY_BOUNCE	1
+
 public Plugin:myinfo =
 {
     name = "Jetpack Plus",
@@ -28,6 +31,8 @@ public Plugin:myinfo =
 
 
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
+
+new g_Offset_movecollide = -1;
 
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
 
@@ -52,6 +57,11 @@ public OnPluginStart()
     g_Cvar_Enabled = CreateConVar("sm_jetpack_enabled", "1", "Enabled");
 
     RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
+    RegConsoleCmd("+sm_jetpack", Command_JetpackStart, "", FCVAR_GAMEDLL);
+    RegConsoleCmd("-sm_jetpack", Command_JetpackStop,  "", FCVAR_GAMEDLL);
+
+    if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
+        LogError("Could not find offset for CBaseEntity::movecollide");
 }
 
 public OnClientDisconnect(client)
@@ -83,9 +93,9 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     if(buttons & IN_JUMP && !IsClientUsingJetpack(client))
     {
         //TODO send player id, not client id
-        CreateTimer(0.2, HeldJump, client);
+        //CreateTimer(0.2, HeldJump, client);
     }
-    
+
     return Plugin_Continue;
 }
 
@@ -108,6 +118,18 @@ public Action:Command_Test(client, args)
     return Plugin_Handled;
 }
 
+public Action:Command_JetpackStart(client, args)
+{
+    StartJetpack(client);
+    return Plugin_Continue;
+}
+
+public Action:Command_JetpackStop(client, args)
+{
+    StopJetpack(client);
+    return Plugin_Continue;
+}
+
 bool:IsClientUsingJetpack(client)
 {
     return g_IsUsingJetpack[client];
@@ -121,12 +143,14 @@ bool:AreJetpacksEnabled()
 StartJetpack(client)
 {
     SetEntityMoveType(client, MOVETYPE_FLY);
+    SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     g_IsUsingJetpack[client] = true;
 }
 
 StopJetpack(client)
 {
     SetEntityMoveType(client, MOVETYPE_WALK);
+    SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
 }
 
@@ -135,7 +159,7 @@ JetpackStep(client)
 {
     if(IsPlayerAlive(client))
     {
-        JetpackPush(client, 100.0);
+        JetpackPush(client, 50.0);
     }
     else
     {
@@ -146,7 +170,13 @@ JetpackStep(client)
 JetpackPush(client, Float:force)
 {
     new Float:vec[3];
-    Entity_GetLocalVelocity(client, vec);
+    Entity_GetBaseVelocity(client, vec);
     vec[2] += force;
-    Entity_SetLocalVelocity(client, vec);
+    Entity_SetBaseVelocity(client, vec);
+}
+
+SetEntityMoveCollide(entity, movecollide)
+{
+    if(g_Offset_movecollide == -1) return;
+    SetEntData(entity, g_Offset_movecollide, movecollide);
 }
