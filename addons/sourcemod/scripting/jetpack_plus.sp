@@ -159,7 +159,7 @@ JetpackStep(client)
 {
     if(IsPlayerAlive(client))
     {
-        JetpackPush(client, 50.0);
+        JetpackPush(client, 8.0);
     }
     else
     {
