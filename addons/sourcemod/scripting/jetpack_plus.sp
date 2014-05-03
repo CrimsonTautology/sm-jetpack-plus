@@ -120,11 +120,13 @@ bool:AreJetpacksEnabled()
 
 StartJetpack(client)
 {
+    SetEntityMoveType(client, MOVETYPE_FLY);
     g_IsUsingJetpack[client] = true;
 }
 
 StopJetpack(client)
 {
+    SetEntityMoveType(client, MOVETYPE_WALK);
     g_IsUsingJetpack[client] = false;
 }
 
