@@ -115,17 +115,20 @@ public Action:HeldJump(Handle:timer, any:client)
 
 public Action:Command_Test(client, args)
 {
+    //TODO
     return Plugin_Handled;
 }
 
 public Action:Command_JetpackStart(client, args)
 {
+    //TODO
     StartJetpack(client);
     return Plugin_Continue;
 }
 
 public Action:Command_JetpackStop(client, args)
 {
+    //TODO
     StopJetpack(client);
     return Plugin_Continue;
 }
