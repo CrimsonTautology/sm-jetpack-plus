@@ -170,6 +170,7 @@ StartJetpack(client)
     SetEntityMoveType(client, MOVETYPE_FLY);
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     g_IsUsingJetpack[client] = true;
+    EmitSoundToAll(g_JetpackSound, client, SNDCHAN_AUTO);
 }
 
 StopJetpack(client)
@@ -177,6 +178,7 @@ StopJetpack(client)
     SetEntityMoveType(client, MOVETYPE_WALK);
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
+    StopSound(client, SNDCHAN_AUTO, g_JetpackSound);
 }
 
 //Called each frame a client is using a jetpack
