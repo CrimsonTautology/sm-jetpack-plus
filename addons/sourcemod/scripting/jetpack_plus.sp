@@ -12,8 +12,8 @@
 #pragma semicolon 1
 
 #include <sourcemod>
+#include <sdktools>
 #include <smlib/entities>
-#include <jetpack_plus>
 
 #define PLUGIN_VERSION "0.1"
 
@@ -83,7 +83,7 @@ public OnPluginStart()
 public OnConfigsExecuted()
 {
     GetConVarString(g_Cvar_JetpackSound, g_JetpackSound, sizeof(g_Cvar_JetpackSound));
-    PrecacheSound(g_JetPackSound, true);
+    PrecacheSound(g_JetpackSound, true);
 }
 
 public OnClientDisconnect(client)
