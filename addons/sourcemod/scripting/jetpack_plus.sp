@@ -31,10 +31,13 @@ public Plugin:myinfo =
 
 
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
+new Handle:g_Cvar_JetpackSound = INVALID_HANDLE;
+new Handle:g_Cvar_JetpackSpeed = INVALID_HANDLE;
 
 new g_Offset_movecollide = -1;
 
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
+new String:g_JetpackSound[PLATFORM_MAX_PATH];
 
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -54,7 +57,20 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
-    g_Cvar_Enabled = CreateConVar("sm_jetpack_enabled", "1", "Enabled");
+    g_Cvar_Enabled = CreateConVar(
+        "sm_jetpack",
+        "1",
+        "Set to 1 to enable the jetpack plugin");
+    g_Cvar_JetpackSound = CreateConVar(
+        "sm_jetpack_sound",
+        "vehicles/airboat/fan_blade_fullthrottle_loop1.wav",
+        "The default sound for the jetpack"
+        );
+    g_Cvar_JetpackSpeed = CreateConVar(
+        "sm_jetpack_speed",
+        "8.0",
+        "Speed of the jetpack"
+        );
 
     RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
     //RegConsoleCmd("+sm_jetpack", Command_JetpackStart, "", FCVAR_GAMEDLL); //TODO remove
@@ -62,6 +78,12 @@ public OnPluginStart()
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
+}
+
+public OnConfigsExecuted()
+{
+    GetConVarString(g_Cvar_JetpackSound, g_JetpackSound, sizeof(g_Cvar_JetpackSound));
+    PrecacheSound(g_JetPackSound, true);
 }
 
 public OnClientDisconnect(client)
@@ -163,7 +185,7 @@ JetpackStep(client)
     new buttons = GetClientButtons(client);
     if(IsPlayerAlive(client) && (buttons & IN_JUMP))
     {
-        JetpackPush(client, 8.0);
+        JetpackPush(client, GetConVarFloat(g_Cvar_JetpackSpeed));
     }
     else
     {
