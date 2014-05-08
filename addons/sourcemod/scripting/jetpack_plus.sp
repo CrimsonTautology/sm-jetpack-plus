@@ -72,10 +72,6 @@ public OnPluginStart()
         "Speed of the jetpack"
         );
 
-    RegConsoleCmd("sm_test", Command_Test, "TODO: TEST");
-    //RegConsoleCmd("+sm_jetpack", Command_JetpackStart, "", FCVAR_GAMEDLL); //TODO remove
-    //RegConsoleCmd("-sm_jetpack", Command_JetpackStop,  "", FCVAR_GAMEDLL);
-
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
 }
@@ -114,17 +110,18 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 
     if(buttons & IN_JUMP && !IsClientUsingJetpack(client))
     {
-        //TODO send player id, not client id
-        CreateTimer(0.2, HeldJump, client);
+        new player = GetClientUserId(client);
+        CreateTimer(0.2, HeldJump, player);
     }
 
     return Plugin_Continue;
 }
 
 //Call back for when a player presses jump.  Checks if jump is still held down
-public Action:HeldJump(Handle:timer, any:client)
+public Action:HeldJump(Handle:timer, any:player)
 {
-    //TODO retrieve client id from player id
+    new client = GetClientOfUserId(player);
+
     if(!IsClientInGame(client)) return Plugin_Handled;
 
     if(GetClientButtons(client) & IN_JUMP)
@@ -133,26 +130,6 @@ public Action:HeldJump(Handle:timer, any:client)
     }
 
     return Plugin_Handled;
-}
-
-public Action:Command_Test(client, args)
-{
-    //TODO
-    return Plugin_Handled;
-}
-
-public Action:Command_JetpackStart(client, args)
-{
-    //TODO
-    StartJetpack(client);
-    return Plugin_Continue;
-}
-
-public Action:Command_JetpackStop(client, args)
-{
-    //TODO
-    StopJetpack(client);
-    return Plugin_Continue;
 }
 
 bool:IsClientUsingJetpack(client)
