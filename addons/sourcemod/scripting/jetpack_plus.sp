@@ -41,6 +41,7 @@ new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
 new String:g_JetpackSound[PLATFORM_MAX_PATH];
 
 new g_JetpackParticle[MAXPLAYERS+1][2];
+new String:g_JetpackParticleName[64];
 
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -75,8 +76,22 @@ public OnPluginStart()
         "Speed of the jetpack"
         );
 
+    RegConsoleCmd("sm_jp", Command_Jp, "Change jetpack particle");
+
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
+}
+
+public Action:Command_Jp(client, args)
+{
+
+    if(client && IsClientAuthorized(client)){
+        decl String:path[64];
+        GetCmdArgString(path, sizeof(path));
+        strcopy(g_JetpackParticleName, 64, path);
+    }
+
+    return Plugin_Handled;
 }
 
 public OnConfigsExecuted()
@@ -114,7 +129,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     if(!IsClientUsingJetpack(client) && buttons & IN_JUMP)
     {
         new player = GetClientUserId(client);
-        CreateTimer(0.11, HeldJump, player);
+        CreateTimer(0.17, HeldJump, player);
     }
 
     return Plugin_Continue;
@@ -156,7 +171,20 @@ StartJetpack(client)
     static const Float:ang[3] = { -25.0, 90.0, 0.0 };
     static const Float:pos[3] = {   0.0, 10.0, 1.0 };
 
-    CreateParticle("muzzle_minigun", 0.15, client, Attach, "flag", pos, ang);
+    //https://forums.alliedmods.net/showthread.php?t=127111
+    //pyrovision_flaming_arrow
+    //pyrovision_flying_flaming_arrow
+    //ghost_pumpkin
+    //ghost_pumpkin_flyingbits
+    //burningplayer_rainbow
+    //burningplayer_corpse_rainbow_stars
+    //burningplayer_rainbow_OLD
+    //flamethrower_rainbow_bubbles02
+    //burninggibs
+    //electrocuted_blue
+    //spell_batball_blue
+    //g_JetpackParticle[client][0] = CreateParticle("halloween_rockettrail", 0.0, client, Attach, "flag", pos, ang);
+    g_JetpackParticle[client][0] = CreateParticle(g_JetpackParticleName, 0.0, client, Attach, "flag", pos, ang);
 }
 
 StopJetpack(client)
@@ -165,6 +193,7 @@ StopJetpack(client)
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
     StopSound(client, SNDCHAN_AUTO, g_JetpackSound);
+    DeleteParticle(g_JetpackParticle[client][0]);
 }
 
 //Called each frame a client is using a jetpack
