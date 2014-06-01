@@ -13,6 +13,7 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <particle>
 #include <smlib/entities>
 
 #define PLUGIN_VERSION "0.1"
@@ -38,6 +39,8 @@ new g_Offset_movecollide = -1;
 
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
 new String:g_JetpackSound[PLATFORM_MAX_PATH];
+
+new g_JetpackParticle[MAXPLAYERS+1][2];
 
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -111,7 +114,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     if(!IsClientUsingJetpack(client) && buttons & IN_JUMP)
     {
         new player = GetClientUserId(client);
-        CreateTimer(0.2, HeldJump, player);
+        CreateTimer(0.11, HeldJump, player);
     }
 
     return Plugin_Continue;
@@ -149,6 +152,11 @@ StartJetpack(client)
     g_IsUsingJetpack[client] = true;
 
     EmitSoundToAll(g_JetpackSound, client, SNDCHAN_AUTO);
+
+    static const Float:ang[3] = { -25.0, 90.0, 0.0 };
+    static const Float:pos[3] = {   0.0, 10.0, 1.0 };
+
+    CreateParticle("muzzle_minigun", 0.15, client, Attach, "flag", pos, ang);
 }
 
 StopJetpack(client)
