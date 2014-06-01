@@ -108,7 +108,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 {
     if(!AreJetpacksEnabled()) return Plugin_Continue;
 
-    if(buttons & IN_JUMP && !IsClientUsingJetpack(client))
+    if(!IsClientUsingJetpack(client) && buttons & IN_JUMP)
     {
         new player = GetClientUserId(client);
         CreateTimer(0.2, HeldJump, player);
@@ -124,7 +124,7 @@ public Action:HeldJump(Handle:timer, any:player)
 
     if(!IsClientInGame(client)) return Plugin_Handled;
 
-    if(GetClientButtons(client) & IN_JUMP)
+    if(!IsClientUsingJetpack(client) && GetClientButtons(client) & IN_JUMP)
     {
         StartJetpack(client);
     }
@@ -147,6 +147,7 @@ StartJetpack(client)
     SetEntityMoveType(client, MOVETYPE_FLY);
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     g_IsUsingJetpack[client] = true;
+
     EmitSoundToAll(g_JetpackSound, client, SNDCHAN_AUTO);
 }
 
