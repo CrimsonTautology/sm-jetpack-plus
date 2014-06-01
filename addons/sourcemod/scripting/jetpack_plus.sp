@@ -78,7 +78,7 @@ public OnPluginStart()
 
 public OnConfigsExecuted()
 {
-    GetConVarString(g_Cvar_JetpackSound, g_JetpackSound, sizeof(g_Cvar_JetpackSound));
+    GetConVarString(g_Cvar_JetpackSound, g_JetpackSound, sizeof(g_JetpackSound));
     PrecacheSound(g_JetpackSound, true);
 }
 
