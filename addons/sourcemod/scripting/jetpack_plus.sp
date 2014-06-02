@@ -2,7 +2,7 @@
  * vim: set ts=4 :
  * =============================================================================
  * Jetpack Plus
- * TODO: Describe this plugin
+ * Rewrite of the Sourcemod plugin to make it easier to extend and modify.
  *
  * Copyright 2014 CrimsonTautology
  * =============================================================================
@@ -29,7 +29,7 @@ public Plugin:myinfo =
 {
     name = "Jetpack Plus",
     author = "CrimsonTautology",
-    description = "TODO: description",
+    description = "Let client's fly around by holding jump.",
     version = PLUGIN_VERSION,
     url = "https://github.com/CrimsonTautology/sm_jetpack_plus"
 };
