@@ -52,8 +52,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
     RegPluginLibrary("jetpack_plus"); 
 
-    CreateNative("IsClientUsingJetpack", _IsClientUsingJetpack);
-    CreateNative("AreJetpacksEnabled", _AreJetpacksEnabled);
+    CreateNative("IsClientUsingJetpack", IsClientUsingJetpack);
+    CreateNative("AreJetpacksEnabled", AreJetpacksEnabled);
 
     return APLRes_Success;
 }
@@ -130,14 +130,14 @@ public Action:HeldJump(Handle:timer, any:player)
     return Plugin_Handled;
 }
 
-public _IsClientUsingJetpack(Handle:plugin, args) { return _:IsClientUsingJetpack(GetNativeCell(1)); }
-bool:IsClientUsingJetpack(client)
+public IsClientUsingJetpack(Handle:plugin, args) { return _:_IsClientUsingJetpack(GetNativeCell(1)); }
+bool:_IsClientUsingJetpack(client)
 {
     return g_IsUsingJetpack[client];
 }
 
-public _AreJetpacksEnabled(Handle:plugin, args) { return _:AreJetpacksEnabled(); }
-bool:AreJetpacksEnabled()
+public AreJetpacksEnabled(Handle:plugin, args) { return _:_AreJetpacksEnabled(); }
+bool:_AreJetpacksEnabled()
 {
     return GetConVarBool(g_Cvar_Enabled);
 }

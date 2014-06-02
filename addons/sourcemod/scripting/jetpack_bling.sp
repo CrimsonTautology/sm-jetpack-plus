@@ -14,6 +14,7 @@
 
 #include <sourcemod>
 #include <jetpack_plus>
+#include <sdktools>
 #include <particle>
 #undef REQUIRE_PLUGIN
 #include <donator>
