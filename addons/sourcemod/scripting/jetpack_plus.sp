@@ -15,6 +15,8 @@
 #include <sdktools>
 #include <particle>
 #include <smlib/entities>
+#undef REQUIRE_PLUGIN
+#include <donator>
 
 #define PLUGIN_VERSION "0.1"
 
@@ -35,6 +37,8 @@ public Plugin:myinfo =
 
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackSpeed = INVALID_HANDLE;
+
+new bool:g_DonatorLibraryExists = false;
 
 new g_Offset_movecollide = -1;
 
@@ -61,6 +65,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
     RegPluginLibrary("jetpack_plus"); 
 
+    MarkNativeAsOptional("IsPlayerDonator");
+    MarkNativeAsOptional("Donator_RegisterMenuItem");
+
     return APLRes_Success;
 }
 
@@ -80,6 +87,32 @@ public OnPluginStart()
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
+
+    g_DonatorLibraryExists = LibraryExists("donator.core");
+}
+
+public OnAllPluginsLoaded()
+{
+    if (g_DonatorLibraryExists)
+    {
+        Donator_RegisterMenuItem("Jetpack Bling", JetpackBlingMenu);
+    }
+}
+
+public OnLibraryRemoved(const String:name[])
+{
+    if (StrEqual(name, "donator.core"))
+    {
+        g_DonatorLibraryExists = false;
+    }
+}
+
+public OnLibraryAdded(const String:name[])
+{
+    if (StrEqual(name, "donator.core"))
+    {
+        g_DonatorLibraryExists = true;
+    }
 }
 
 public OnMapStart()
@@ -245,7 +278,7 @@ SetEntityMoveCollide(entity, movecollide)
 }
 
 //Menus
-//public DonatorMenu:SpriteControlCallback(client) ChangeJetpackMenu
+public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
 public ChangeJetpackMenu(client)
 {
     new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
@@ -253,7 +286,7 @@ public ChangeJetpackMenu(client)
     SetMenuTitle(menu, "Choose your jetpack");
 
     decl String:buf[16];
-    for(new i=0; i < g_JetpackTypeCount; i++)
+    for(new i=0; i < g_JetpackTypeCount && i < MAX_JETPACK_TYPES; i++)
     {
         IntToString(i, buf, sizeof(buf));
         AddMenuItem(menu, buf, g_JetpackTypeName[i]);
@@ -277,4 +310,3 @@ public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
         case MenuAction_End: CloseHandle(menu);
     }
 }
-
