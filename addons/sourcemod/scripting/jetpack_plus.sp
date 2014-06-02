@@ -38,6 +38,10 @@ public Plugin:myinfo =
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackSpeed = INVALID_HANDLE;
 
+new Handle:g_Forward_OnStartJetpack = INVALID_HANDLE;
+new Handle:g_Forward_OnStopJetpack = INVALID_HANDLE;
+new Handle:g_Forward_OnJetpackStep= INVALID_HANDLE;
+
 new g_Offset_movecollide = -1;
 
 new bool:g_DonatorLibraryExists = false;
@@ -84,6 +88,10 @@ public OnPluginStart()
             "8.0",
             "Speed of the jetpack"
             );
+
+    g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Ignore, Param_Cell);
+    g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Ignore, Param_Cell);
+    g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Ignore, Param_Cell);
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
@@ -217,6 +225,13 @@ bool:AreJetpacksEnabled()
 
 StartJetpack(client)
 {
+    //Forward event
+    decl Action:result;
+    Call_StartForward(g_Forward_OnStartJetpack);
+    Call_PushCell(client);
+    Call_Finish(result);
+    if(result == Plugin_Handled) return;
+
     SetEntityMoveType(client, MOVETYPE_FLY);
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     g_IsUsingJetpack[client] = true;
@@ -245,6 +260,13 @@ StartJetpack(client)
 
 StopJetpack(client)
 {
+    //Forward event
+    decl Action:result;
+    Call_StartForward(g_Forward_OnStopJetpack);
+    Call_PushCell(client);
+    Call_Finish(result);
+    if(result == Plugin_Handled) return;
+
     SetEntityMoveType(client, MOVETYPE_WALK);
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
@@ -257,6 +279,13 @@ StopJetpack(client)
 //Called each frame a client is using a jetpack
 JetpackStep(client)
 {
+    //Forward event
+    decl Action:result;
+    Call_StartForward(g_Forward_OnJetpackStep);
+    Call_PushCell(client);
+    Call_Finish(result);
+    if(result == Plugin_Handled) return;
+
     new buttons = GetClientButtons(client);
     if(IsPlayerAlive(client) && (buttons & IN_JUMP))
     {
