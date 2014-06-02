@@ -13,6 +13,7 @@ SCRIPTING    = 'addons/sourcemod/scripting/'
 PLUGINS      = 'addons/sourcemod/plugins/'
 EXTENSIONS   = 'addons/sourcemod/extensions/'
 TRANSLATIONS = 'addons/sourcemod/translations/'
+CONFIGS2     = 'addons/sourcemod/configs/'
 CONFIGS      = 'cfg/sourcemod/'
  
 task :default => [:compile, :install, :reload]
@@ -43,6 +44,9 @@ task :install do
 
   #Install default configfiles if they don't exist
   install_filetype '*.cfg', CONFIGS, false
+
+  #Install data configfiles
+  install_filetype '*.cfg', CONFIGS2
 end
  
 desc "Clean up compiled files"

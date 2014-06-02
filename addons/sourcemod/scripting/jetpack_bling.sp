@@ -56,6 +56,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
+
+    RegConsoleCmd("sm_jetpack", Command_Jetpack, "Change jetpack");
+
     g_DonatorLibraryExists = LibraryExists("donator.core");
 }
 
@@ -63,7 +66,7 @@ public OnAllPluginsLoaded()
 {
     if (g_DonatorLibraryExists)
     {
-        Donator_RegisterMenuItem("Jetpack Bling", JetpackBlingMenu);
+        //Donator_RegisterMenuItem("Jetpack Bling", JetpackBlingMenu);
     }
 }
 
@@ -99,20 +102,27 @@ ReadJetpacks()
 
     new Handle:kv = CreateKeyValues("Jetpacks");
 
-    decl String:path[PLATFORM_MAX_PATH];
+    decl String:path[PLATFORM_MAX_PATH], String:tmp[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/jetpacks.cfg");
 
     if(FileExists(path))
     {
         FileToKeyValues(kv, path);
+        KvGotoFirstSubKey(kv);
 
         do
         {
-            KvGetString(kv, "name", g_JetpackTypeName[g_JetpackTypeCount], PLATFORM_MAX_PATH);
-            KvGetString(kv, "particle", g_JetpackTypeParticle[g_JetpackTypeCount], PLATFORM_MAX_PATH);
-            KvGetString(kv, "sound", g_JetpackTypeSound[g_JetpackTypeCount], PLATFORM_MAX_PATH);
-            PrecacheSound(g_JetpackTypeSound[g_JetpackTypeCount], true);
-            g_JetpackTypeCount++;
+            KvGetSectionName(kv, tmp, sizeof(tmp));
+            PrintToConsole(0, "hit ------- %s", tmp);
+            if(StrEqual(tmp, "Jetpack") )
+            {
+                KvGetString(kv, "name", g_JetpackTypeName[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+                KvGetString(kv, "particle", g_JetpackTypeParticle[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+                KvGetString(kv, "sound", g_JetpackTypeSound[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+
+                PrecacheSound(g_JetpackTypeSound[g_JetpackTypeCount], true);
+                g_JetpackTypeCount++;
+            }
 
         } while(KvGotoNextKey(kv) && g_JetpackTypeCount < MAX_JETPACK_TYPES);
 
@@ -121,6 +131,16 @@ ReadJetpacks()
     }
 
     CloseHandle(kv);
+}
+
+public Action:Command_Jetpack(client, args)
+{
+    if (client)
+    {
+        ChangeJetpackMenu(client);
+    }
+
+    return Plugin_Handled;
 }
 
 public Action:OnStartJetpack(client)
@@ -169,10 +189,11 @@ ClearJetpackEffects(client)
 }
 
 //Menus
-public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
+//public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
 ChangeJetpackMenu(client)
 {
     new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
+    new selected = g_ClientSelectedJetpackType[client];
 
     SetMenuTitle(menu, "Choose your jetpack");
 
@@ -180,7 +201,7 @@ ChangeJetpackMenu(client)
     for(new i=0; i < g_JetpackTypeCount && i < MAX_JETPACK_TYPES; i++)
     {
         IntToString(i, buf, sizeof(buf));
-        AddMenuItem(menu, buf, g_JetpackTypeName[i]);
+        AddMenuItem(menu, buf, g_JetpackTypeName[i], i == selected ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
     }
 
     DisplayMenu(menu, client, 20);
