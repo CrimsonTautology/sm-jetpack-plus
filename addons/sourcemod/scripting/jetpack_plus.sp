@@ -329,7 +329,7 @@ ChangeJetpackMenu(client)
     DisplayMenu(menu, client, 20);
 }
 
-ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
+public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
 {
     switch (action)
     {
