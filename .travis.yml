@@ -21,6 +21,7 @@ before_script:
 
 script: 
     - ./spcomp jetpack_plus.sp
+    - ./spcomp jetpack_bling.sp
 
 after_script:
     - ls *.smx
