@@ -113,7 +113,6 @@ ReadJetpacks()
         do
         {
             KvGetSectionName(kv, tmp, sizeof(tmp));
-            PrintToConsole(0, "hit ------- %s", tmp);
             if(StrEqual(tmp, "Jetpack") )
             {
                 KvGetString(kv, "name", g_JetpackTypeName[g_JetpackTypeCount], PLATFORM_MAX_PATH);
