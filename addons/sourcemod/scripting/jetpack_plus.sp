@@ -21,6 +21,8 @@
 #define MOVECOLLIDE_DEFAULT		0
 #define MOVECOLLIDE_FLY_BOUNCE	1
 
+#define MAX_JETPACK_TYPES 64
+
 public Plugin:myinfo =
 {
     name = "Jetpack Plus",
@@ -40,8 +42,17 @@ new g_Offset_movecollide = -1;
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
 new String:g_JetpackSound[PLATFORM_MAX_PATH];
 
-new g_JetpackParticle[MAXPLAYERS+1][2];
 new String:g_JetpackParticleName[64];
+
+//Player options
+new g_ClientSelectedJetpack[MAXPLAYERS+1] = {0, ...};
+new g_JetpackParticle[MAXPLAYERS+1][2];
+
+//
+new String:g_JetpackTypeName[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
+new String:g_JetpackTypeParticle[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
+new String:g_JetpackTypeSound[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
+new g_JetpackTypeCount = 0;
 
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -62,21 +73,21 @@ public OnPluginStart()
     LoadTranslations("jetpack_plus.phrases");
 
     g_Cvar_Enabled = CreateConVar(
-        "sm_jetpack",
-        "1",
-        "Set to 1 to enable the jetpack plugin");
+            "sm_jetpack",
+            "1",
+            "Set to 1 to enable the jetpack plugin");
     g_Cvar_JetpackSound = CreateConVar(
-        "sm_jetpack_sound",
-        "vehicles/airboat/fan_blade_fullthrottle_loop1.wav",
-        "The default sound for the jetpack"
-        );
+            "sm_jetpack_sound",
+            "vehicles/airboat/fan_blade_fullthrottle_loop1.wav",
+            "The default sound for the jetpack"
+            );
     g_Cvar_JetpackSpeed = CreateConVar(
-        "sm_jetpack_speed",
-        "8.0",
-        "Speed of the jetpack"
-        );
+            "sm_jetpack_speed",
+            "8.0",
+            "Speed of the jetpack"
+            );
 
-    RegConsoleCmd("sm_jp", Command_Jp, "Change jetpack particle");
+    RegConsoleCmd("sm_jp", Command_Jp, "Change jetpack particle"); //TODO just for testing particles
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
@@ -85,6 +96,7 @@ public OnPluginStart()
 public Action:Command_Jp(client, args)
 {
 
+    //TODO just for testing particles
     if(client && IsClientAuthorized(client)){
         decl String:path[64];
         GetCmdArgString(path, sizeof(path));
@@ -92,6 +104,40 @@ public Action:Command_Jp(client, args)
     }
 
     return Plugin_Handled;
+}
+
+public OnMapStart()
+{
+    ReadJetpacks();
+}
+
+ReadJetpacks()
+{
+    g_JetpackTypeCount = 0;
+    kv = CreateKeyValues("Jetpacks");
+
+    decl String:path[PLATFORM_MAX_PATH];
+    BuildPath(Path_SM, path, sizeof(path), "configs/jetpacks.cfg");
+
+    if(FileExists(path))
+    {
+        FileToKeyValues(kv, path);
+
+        do
+        {
+            KvGetString(kv, "name", g_JetpackTypeName[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+            KvGetString(kv, "particle", g_JetpackTypeParticle[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+            KvGetString(kv, "sound", g_JetpackTypeSound[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+            PrecacheSound(g_JetpackTypeSound[g_JetpackTypeCount], true);
+            g_JetpackTypeCount++;
+
+        } while(KvGotoNextKey(kv) && g_JetpackTypeCount < MAX_JETPACK_TYPES);
+
+    } else {
+        LogError("File Not Found: %s", path);
+    }
+
+    CloseHandle(kv);
 }
 
 public OnConfigsExecuted()
@@ -176,7 +222,7 @@ StartJetpack(client)
     //pyrovision_flying_flaming_arrow
     //ghost_pumpkin
     //ghost_pumpkin_flyingbits
-    //burningplayer_rainbow
+
     //burningplayer_corpse_rainbow_stars
     //burningplayer_rainbow_OLD
     //flamethrower_rainbow_bubbles02
