@@ -284,7 +284,7 @@ SetEntityMoveCollide(entity, movecollide)
 
 //Menus
 public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
-public ChangeJetpackMenu(client)
+ChangeJetpackMenu(client)
 {
     new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
 
@@ -300,7 +300,7 @@ public ChangeJetpackMenu(client)
     DisplayMenu(menu, client, 20);
 }
 
-public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
+ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
 {
     switch (action)
     {
@@ -314,7 +314,7 @@ public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
                 //Clear running particle and sound
                 StopJetpack(client);
 
-                g_ClientSelectedJetpackType[client] = selected
+                g_ClientSelectedJetpackType[client] = selected;
             }
         case MenuAction_End: CloseHandle(menu);
     }
