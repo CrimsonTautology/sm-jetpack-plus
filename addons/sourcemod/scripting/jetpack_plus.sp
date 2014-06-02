@@ -12,7 +12,6 @@
 #pragma semicolon 1
 
 #include <sourcemod>
-#include <jetpack_plus>
 #include <sdktools>
 #include <smlib/entities>
 
@@ -52,8 +51,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
     RegPluginLibrary("jetpack_plus"); 
 
-    CreateNative("IsClientUsingJetpack", IsClientUsingJetpack);
-    CreateNative("AreJetpacksEnabled", AreJetpacksEnabled);
+    CreateNative("IsClientUsingJetpack", _IsClientUsingJetpack);
+    CreateNative("AreJetpacksEnabled", _AreJetpacksEnabled);
 
     return APLRes_Success;
 }
@@ -130,14 +129,14 @@ public Action:HeldJump(Handle:timer, any:player)
     return Plugin_Handled;
 }
 
-public IsClientUsingJetpack(Handle:plugin, args) { return _:_IsClientUsingJetpack(GetNativeCell(1)); }
-bool:_IsClientUsingJetpack(client)
+public _IsClientUsingJetpack(Handle:plugin, args) { return _:IsClientUsingJetpack(GetNativeCell(1)); }
+bool:IsClientUsingJetpack(client)
 {
     return g_IsUsingJetpack[client];
 }
 
-public AreJetpacksEnabled(Handle:plugin, args) { return _:_AreJetpacksEnabled(); }
-bool:_AreJetpacksEnabled()
+public _AreJetpacksEnabled(Handle:plugin, args) { return _:AreJetpacksEnabled(); }
+bool:AreJetpacksEnabled()
 {
     return GetConVarBool(g_Cvar_Enabled);
 }
