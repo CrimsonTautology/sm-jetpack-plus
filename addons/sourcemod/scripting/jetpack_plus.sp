@@ -243,3 +243,38 @@ SetEntityMoveCollide(entity, movecollide)
     if(g_Offset_movecollide == -1) return;
     SetEntData(entity, g_Offset_movecollide, movecollide);
 }
+
+//Menus
+//public DonatorMenu:SpriteControlCallback(client) ChangeJetpackMenu
+public ChangeJetpackMenu(client)
+{
+    new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
+
+    SetMenuTitle(menu, "Choose your jetpack");
+
+    decl String:buf[16];
+    for(new i=0; i < g_JetpackTypeCount; i++)
+    {
+        IntToString(i, buf, sizeof(buf));
+        AddMenuItem(menu, buf, g_JetpackTypeName[i]);
+    }
+
+    DisplayMenu(menu, client, 20);
+}
+
+public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
+{
+    switch (action)
+    {
+        case MenuAction_Select:
+            {
+                new String:info[32];
+                GetMenuItem(menu, param2, info, sizeof(info));
+                new selected = StringToInt(info);
+                new client = param1;
+                g_ClientSelectedJetpackType[client] = selected
+            }
+        case MenuAction_End: CloseHandle(menu);
+    }
+}
+
