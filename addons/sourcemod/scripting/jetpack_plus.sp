@@ -38,15 +38,15 @@ public Plugin:myinfo =
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackSpeed = INVALID_HANDLE;
 
-new bool:g_DonatorLibraryExists = false;
-
 new g_Offset_movecollide = -1;
+
+new bool:g_DonatorLibraryExists = false;
 
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
 
 //Player options
 new g_ClientSelectedJetpackType[MAXPLAYERS+1] = {0, ...};
-new g_JetpackParticle[MAXPLAYERS+1][2]; //TODO
+new g_JetpackParticle[MAXPLAYERS+1][2];
 
 //Parallel arrays to store types of jetpacks
 new String:g_JetpackTypeName[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
@@ -239,7 +239,6 @@ StartJetpack(client)
 
 StopJetpack(client)
 {
-    //TODO handle changes in sound and particle while jetpack active
     SetEntityMoveType(client, MOVETYPE_WALK);
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
@@ -301,10 +300,14 @@ public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
     {
         case MenuAction_Select:
             {
+                new client = param1;
                 new String:info[32];
                 GetMenuItem(menu, param2, info, sizeof(info));
                 new selected = StringToInt(info);
-                new client = param1;
+
+                //Clear running particle and sound
+                StopJetpack(client);
+
                 g_ClientSelectedJetpackType[client] = selected
             }
         case MenuAction_End: CloseHandle(menu);
