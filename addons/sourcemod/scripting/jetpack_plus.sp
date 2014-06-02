@@ -34,21 +34,17 @@ public Plugin:myinfo =
 
 
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
-new Handle:g_Cvar_JetpackSound = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackSpeed = INVALID_HANDLE;
 
 new g_Offset_movecollide = -1;
 
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
-new String:g_JetpackSound[PLATFORM_MAX_PATH];
-
-new String:g_JetpackParticleName[64];
 
 //Player options
-new g_ClientSelectedJetpack[MAXPLAYERS+1] = {0, ...};
-new g_JetpackParticle[MAXPLAYERS+1][2];
+new g_ClientSelectedJetpackType[MAXPLAYERS+1] = {0, ...};
+new g_JetpackParticle[MAXPLAYERS+1][2]; //TODO
 
-//
+//Parallel arrays to store types of jetpacks
 new String:g_JetpackTypeName[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
 new String:g_JetpackTypeParticle[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
 new String:g_JetpackTypeSound[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
@@ -76,34 +72,14 @@ public OnPluginStart()
             "sm_jetpack",
             "1",
             "Set to 1 to enable the jetpack plugin");
-    g_Cvar_JetpackSound = CreateConVar(
-            "sm_jetpack_sound",
-            "vehicles/airboat/fan_blade_fullthrottle_loop1.wav",
-            "The default sound for the jetpack"
-            );
     g_Cvar_JetpackSpeed = CreateConVar(
             "sm_jetpack_speed",
             "8.0",
             "Speed of the jetpack"
             );
 
-    RegConsoleCmd("sm_jp", Command_Jp, "Change jetpack particle"); //TODO just for testing particles
-
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
-}
-
-public Action:Command_Jp(client, args)
-{
-
-    //TODO just for testing particles
-    if(client && IsClientAuthorized(client)){
-        decl String:path[64];
-        GetCmdArgString(path, sizeof(path));
-        strcopy(g_JetpackParticleName, 64, path);
-    }
-
-    return Plugin_Handled;
 }
 
 public OnMapStart()
@@ -138,12 +114,6 @@ ReadJetpacks()
     }
 
     CloseHandle(kv);
-}
-
-public OnConfigsExecuted()
-{
-    GetConVarString(g_Cvar_JetpackSound, g_JetpackSound, sizeof(g_JetpackSound));
-    PrecacheSound(g_JetpackSound, true);
 }
 
 public OnClientDisconnect(client)
@@ -212,10 +182,12 @@ StartJetpack(client)
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     g_IsUsingJetpack[client] = true;
 
-    EmitSoundToAll(g_JetpackSound, client, SNDCHAN_AUTO);
+    selected = g_ClientSelectedJetpackType[client];
+    EmitSoundToAll(g_JetpackTypeSound[selected], client, SNDCHAN_AUTO);
 
     static const Float:ang[3] = { -25.0, 90.0, 0.0 };
     static const Float:pos[3] = {   0.0, 10.0, 1.0 };
+    g_JetpackParticle[client][0] = CreateParticle(g_JetpackTypeParticle[selected], 0.0, client, Attach, "flag", pos, ang);
 
     //https://forums.alliedmods.net/showthread.php?t=127111
     //pyrovision_flaming_arrow
@@ -230,15 +202,17 @@ StartJetpack(client)
     //electrocuted_blue
     //spell_batball_blue
     //g_JetpackParticle[client][0] = CreateParticle("halloween_rockettrail", 0.0, client, Attach, "flag", pos, ang);
-    g_JetpackParticle[client][0] = CreateParticle(g_JetpackParticleName, 0.0, client, Attach, "flag", pos, ang);
 }
 
 StopJetpack(client)
 {
+    //TODO handle changes in sound and particle while jetpack active
     SetEntityMoveType(client, MOVETYPE_WALK);
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
-    StopSound(client, SNDCHAN_AUTO, g_JetpackSound);
+
+    selected = g_ClientSelectedJetpackType[client];
+    StopSound(client, SNDCHAN_AUTO, g_JetpackTypeSound[selected]);
     DeleteParticle(g_JetpackParticle[client][0]);
 }
 
