@@ -90,7 +90,7 @@ public OnMapStart()
 ReadJetpacks()
 {
     g_JetpackTypeCount = 0;
-    kv = CreateKeyValues("Jetpacks");
+    new Handle:kv = CreateKeyValues("Jetpacks");
 
     decl String:path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/jetpacks.cfg");
@@ -182,7 +182,7 @@ StartJetpack(client)
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     g_IsUsingJetpack[client] = true;
 
-    selected = g_ClientSelectedJetpackType[client];
+    new selected = g_ClientSelectedJetpackType[client];
     EmitSoundToAll(g_JetpackTypeSound[selected], client, SNDCHAN_AUTO);
 
     static const Float:ang[3] = { -25.0, 90.0, 0.0 };
@@ -211,7 +211,7 @@ StopJetpack(client)
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     g_IsUsingJetpack[client] = false;
 
-    selected = g_ClientSelectedJetpackType[client];
+    new selected = g_ClientSelectedJetpackType[client];
     StopSound(client, SNDCHAN_AUTO, g_JetpackTypeSound[selected]);
     DeleteParticle(g_JetpackParticle[client][0]);
 }
