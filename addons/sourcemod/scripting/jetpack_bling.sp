@@ -59,10 +59,7 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
-    RegConsoleCmd("sm_jetpack", Command_Jetpack, "Change jetpack");
-
     g_Cookie_SelectedJetpack = RegClientCookie("selected_jetpack", "Selected jetpack type", CookieAccess_Private);
-
     g_DonatorLibraryExists = LibraryExists("donator.core");
 }
 
@@ -70,7 +67,7 @@ public OnAllPluginsLoaded()
 {
     if (g_DonatorLibraryExists)
     {
-        //Donator_RegisterMenuItem("Jetpack Bling", JetpackBlingMenu);
+        Donator_RegisterMenuItem("Jetpack Bling", JetpackBlingMenu);
     }
 }
 
@@ -136,16 +133,6 @@ ReadJetpacks()
     CloseHandle(kv);
 }
 
-public Action:Command_Jetpack(client, args)
-{
-    if (client)
-    {
-        ChangeJetpackMenu(client);
-    }
-
-    return Plugin_Handled;
-}
-
 public Action:OnStartJetpack(client)
 {
     ApplyJetpackEffects(client);
@@ -187,7 +174,7 @@ ClearJetpackEffects(client)
 }
 
 //Menus
-//public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
+public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
 ChangeJetpackMenu(client)
 {
     new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
