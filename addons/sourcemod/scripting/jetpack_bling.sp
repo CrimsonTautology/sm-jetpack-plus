@@ -14,6 +14,7 @@
 
 #include <sourcemod>
 #include <jetpack_plus>
+#include <clientprefs>
 #include <sdktools>
 #include <particle>
 #undef REQUIRE_PLUGIN
@@ -35,8 +36,9 @@ public Plugin:myinfo =
 new bool:g_DonatorLibraryExists = false;
 
 //Player options
-new g_ClientSelectedJetpackType[MAXPLAYERS+1] = {0, ...};
-new g_JetpackParticle[MAXPLAYERS+1][2];
+new Handle:g_Cookie_SelectedJetpack = INVALID_HANDLE;
+new g_SelectedJetpack[MAXPLAYERS+1] = {0, ...};
+new g_JetpackParticle[MAXPLAYERS+1];
 
 //Parallel arrays to store types of jetpacks
 new String:g_JetpackTypeName[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
@@ -58,6 +60,8 @@ public OnPluginStart()
     LoadTranslations("jetpack_plus.phrases");
 
     RegConsoleCmd("sm_jetpack", Command_Jetpack, "Change jetpack");
+
+    g_Cookie_SelectedJetpack = RegClientCookie("selected_jetpack", "Selected jetpack type", CookieAccess_Private);
 
     g_DonatorLibraryExists = LibraryExists("donator.core");
 }
@@ -145,21 +149,6 @@ public Action:Command_Jetpack(client, args)
 public Action:OnStartJetpack(client)
 {
     ApplyJetpackEffects(client);
-
-    //https://forums.alliedmods.net/showthread.php?t=127111
-    //pyrovision_flaming_arrow
-    //pyrovision_flying_flaming_arrow
-    //ghost_pumpkin
-    //ghost_pumpkin_flyingbits
-
-    //burningplayer_corpse_rainbow_stars
-    //burningplayer_rainbow_OLD
-    //flamethrower_rainbow_bubbles02
-    //burninggibs
-    //electrocuted_blue
-    //spell_batball_blue
-    //g_JetpackParticle[client][0] = CreateParticle("halloween_rockettrail", 0.0, client, Attach, "flag", pos, ang);
-
     return Plugin_Continue;
 }
 
@@ -170,21 +159,31 @@ public Action:OnStopJetpack(client)
     return Plugin_Continue;
 }
 
+GetSelectedJetpackOfClient(client)
+{
+    return g_SelectedJetpack[client];
+}
+
+SetSelectedJetpackOfClient(client, type_of)
+{
+    g_SelectedJetpack[client] = type_of;
+}
+
 ApplyJetpackEffects(client)
 {
-    new selected = g_ClientSelectedJetpackType[client];
+    new selected = GetSelectedJetpackOfClient(client);
     EmitSoundToAll(g_JetpackTypeSound[selected], client, SNDCHAN_AUTO);
 
     static const Float:ang[3] = { -25.0, 90.0, 0.0 };
     static const Float:pos[3] = {   0.0, 10.0, 1.0 };
-    g_JetpackParticle[client][0] = CreateParticle(g_JetpackTypeParticle[selected], 0.0, client, Attach, "flag", pos, ang);
+    g_JetpackParticle[client] = CreateParticle(g_JetpackTypeParticle[selected], 0.0, client, Attach, "flag", pos, ang);
 }
 
 ClearJetpackEffects(client)
 {
-    new selected = g_ClientSelectedJetpackType[client];
+    new selected = GetSelectedJetpackOfClient(client);
     StopSound(client, SNDCHAN_AUTO, g_JetpackTypeSound[selected]);
-    DeleteParticle(g_JetpackParticle[client][0]);
+    DeleteParticle(g_JetpackParticle[client]);
 }
 
 //Menus
@@ -192,7 +191,7 @@ ClearJetpackEffects(client)
 ChangeJetpackMenu(client)
 {
     new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
-    new selected = g_ClientSelectedJetpackType[client];
+    new selected = GetSelectedJetpackOfClient(client);
 
     SetMenuTitle(menu, "Choose your jetpack");
 
@@ -215,12 +214,12 @@ public ChangeJetpackMenuHandler(Handle:menu, MenuAction:action, param1, param2)
                 new client = param1;
                 new String:info[32];
                 GetMenuItem(menu, param2, info, sizeof(info));
-                new selected = StringToInt(info);
+                new type_of = StringToInt(info);
 
                 //Clear running particle and sound to prevent overlap
                 ClearJetpackEffects(client);
 
-                g_ClientSelectedJetpackType[client] = selected;
+                SetSelectedJetpackOfClient(client, type_of);
             }
         case MenuAction_End: CloseHandle(menu);
     }
