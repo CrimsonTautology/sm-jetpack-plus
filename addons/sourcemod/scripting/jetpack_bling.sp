@@ -47,14 +47,6 @@ new String:g_JetpackTypeSound[MAX_JETPACK_TYPES][PLATFORM_MAX_PATH];
 new g_JetpackTypeCount = 0;
 
 
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
-{
-    MarkNativeAsOptional("IsPlayerDonator");
-    MarkNativeAsOptional("Donator_RegisterMenuItem");
-
-    return APLRes_Success;
-}
-
 public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
@@ -63,11 +55,19 @@ public OnPluginStart()
     g_DonatorLibraryExists = LibraryExists("donator.core");
 }
 
+public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
+{
+    MarkNativeAsOptional("IsPlayerDonator");
+    MarkNativeAsOptional("Donator_RegisterMenuItem");
+
+    return APLRes_Success;
+}
+
 public OnAllPluginsLoaded()
 {
     if (g_DonatorLibraryExists)
     {
-        Donator_RegisterMenuItem("Jetpack Bling", JetpackBlingMenu);
+        Donator_RegisterMenuItem("Change Jetpack Bling", JetpackBlingMenu);
     }
 }
 
@@ -188,7 +188,7 @@ ClearJetpackEffects(client)
 }
 
 //Menus
-public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu;
+public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu(client);
 ChangeJetpackMenu(client)
 {
     new Handle:menu = CreateMenu(ChangeJetpackMenuHandler);
