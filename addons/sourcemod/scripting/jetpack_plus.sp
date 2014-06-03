@@ -95,9 +95,7 @@ public OnGameFrame()
             {
                 JetpackStep(client);
             }
-
         }
-
     }
 }
 

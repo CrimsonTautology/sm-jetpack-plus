@@ -200,7 +200,10 @@ ChangeJetpackMenu(client)
     for(new i=0; i < g_JetpackTypeCount && i < MAX_JETPACK_TYPES; i++)
     {
         IntToString(i, buf, sizeof(buf));
-        AddMenuItem(menu, buf, g_JetpackTypeName[i], i == selected ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+        AddMenuItem(menu,
+                buf,
+                g_JetpackTypeName[i],
+                i == selected ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
     }
 
     DisplayMenu(menu, client, 20);
