@@ -87,6 +87,17 @@ public OnLibraryAdded(const String:name[])
     }
 }
 
+public OnClientCookiesCached(client)
+{
+    new String:buffer[11];
+
+    GetClientCookie(client, g_Cookie_SelectedJetpack, buffer, sizeof(buffer));
+    new type_of = StringToInt(buffer)
+    if (strlen(buffer) > 0 && type_of < g_JetpackTypeCount){
+        g_SelectedJetpack[client] = type_of;
+    }
+}
+
 public OnMapStart()
 {
     ReadJetpacks();
@@ -153,6 +164,9 @@ GetSelectedJetpackOfClient(client)
 
 SetSelectedJetpackOfClient(client, type_of)
 {
+    new String:tmp[11];
+    IntToString(type_of, tmp, sizeof(tmp));
+    SetClientCookie(client, g_Cookie_SelectedJetpack, tmp);
     g_SelectedJetpack[client] = type_of;
 }
 
