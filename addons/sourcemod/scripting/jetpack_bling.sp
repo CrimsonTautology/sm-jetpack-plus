@@ -92,7 +92,7 @@ public OnClientCookiesCached(client)
     new String:buffer[11];
 
     GetClientCookie(client, g_Cookie_SelectedJetpack, buffer, sizeof(buffer));
-    new type_of = StringToInt(buffer)
+    new type_of = StringToInt(buffer);
     if (strlen(buffer) > 0 && type_of < g_JetpackTypeCount){
         g_SelectedJetpack[client] = type_of;
     }
