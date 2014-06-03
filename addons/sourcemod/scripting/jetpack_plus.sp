@@ -31,7 +31,8 @@ public Plugin:myinfo =
 
 
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
-new Handle:g_Cvar_JetpackSpeed = INVALID_HANDLE;
+new Handle:g_Cvar_JetpackForce = INVALID_HANDLE;
+new Handle:g_Cvar_JumpDelay = INVALID_HANDLE;
 
 new Handle:g_Forward_OnStartJetpack = INVALID_HANDLE;
 new Handle:g_Forward_OnStopJetpack = INVALID_HANDLE;
@@ -65,10 +66,15 @@ public OnPluginStart()
             "sm_jetpack",
             "1",
             "Set to 1 to enable the jetpack plugin");
-    g_Cvar_JetpackSpeed = CreateConVar(
-            "sm_jetpack_speed",
+    g_Cvar_JetpackForce = CreateConVar(
+            "sm_jetpack_force",
             "8.0",
-            "Speed of the jetpack"
+            "Strength at which the jetpack pushes the player"
+            );
+    g_Cvar_JumpDelay = CreateConVar(
+            "sm_jetpack_jump_delay",
+            "0.15",
+            "The time in seconds the jump key needs to be pressed before the jetpack starts"
             );
 
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Ignore, Param_Cell);
@@ -106,7 +112,8 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     if(!IsClientUsingJetpack(client) && buttons & IN_JUMP)
     {
         new player = GetClientUserId(client);
-        CreateTimer(0.17, HeldJump, player);
+        new Float:delay = GetConVarFloat(g_Cvar_JumpDelay);
+        CreateTimer(delay, HeldJump, player);
     }
 
     return Plugin_Continue;
@@ -180,7 +187,8 @@ JetpackStep(client)
     new buttons = GetClientButtons(client);
     if(IsPlayerAlive(client) && (buttons & IN_JUMP))
     {
-        JetpackPush(client, GetConVarFloat(g_Cvar_JetpackSpeed));
+        new Float:force = GetConVarFloat(g_Cvar_JetpackForce);
+        JetpackPush(client, force);
     }
     else
     {
