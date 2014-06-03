@@ -1,7 +1,7 @@
 # Jetpack Plus
 [![Build Status](https://travis-ci.org/CrimsonTautology/sm_jetpack_plus.svg?branch=master)](https://travis-ci.org/CrimsonTautology/sm_jetpack_plus)
 
-Rewrite of the Sourcemod plugin to make it easier to extend and modify.  Allows players to fly around while hold down their jump key.
+Rewrite of Knagg0's [jetpack plugin](https://forums.alliedmods.net/showthread.php?p=488779) for Sourcemod. Redesigned to make it easier to extend and modify.  Allows players to fly around while hold down their jump key.
 
 ##Installation
 * Compile plugins with spcomp (e.g.)
