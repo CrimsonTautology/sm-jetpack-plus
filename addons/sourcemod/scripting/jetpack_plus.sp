@@ -179,17 +179,21 @@ StopJetpack(client)
 //Called each frame a client is using a jetpack
 JetpackStep(client)
 {
+    new Float:force = GetConVarFloat(g_Cvar_JetpackForce);
+    new bool:force_stop = false;
+
     //Forward event
     decl Action:result;
     Call_StartForward(g_Forward_OnJetpackStep);
     Call_PushCell(client);
+    Call_PushFloatRef(force);
+    Call_PushCellRef(force_stop);
     Call_Finish(result);
     if(result == Plugin_Handled) return;
 
     new buttons = GetClientButtons(client);
-    if(IsPlayerAlive(client) && (buttons & IN_JUMP))
+    if(!force_stop && IsPlayerAlive(client) && (buttons & IN_JUMP))
     {
-        new Float:force = GetConVarFloat(g_Cvar_JetpackForce);
         JetpackPush(client, force);
     }
     else
