@@ -157,6 +157,7 @@ StartJetpack(client)
 
     SetEntityMoveType(client, MOVETYPE_FLY);
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
+    ChangeEdictState(client);
     g_IsUsingJetpack[client] = true;
 }
 
@@ -171,6 +172,7 @@ StopJetpack(client)
 
     SetEntityMoveType(client, MOVETYPE_WALK);
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
+    ChangeEdictState(client);
     g_IsUsingJetpack[client] = false;
 }
 
@@ -202,6 +204,7 @@ JetpackPush(client, Float:force)
     Entity_GetBaseVelocity(client, vec);
     vec[2] += force;
     Entity_SetBaseVelocity(client, vec);
+    ChangeEdictState(client);
 }
 
 SetEntityMoveCollide(entity, movecollide)
