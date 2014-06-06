@@ -139,7 +139,7 @@ public Action:HeldJump(Handle:timer, any:player)
 public ConVarChanged:OnJetpackEnabledChange(Handle:convar, const String:old[], const String:new[])
 {
     //When enabled state changes from enabled to disabled
-    if(StringToInt(old) !=0 && StringToInt(new) == 0)
+    if(bool:StringToInt(old) && !bool:StringToInt(new))
     {
         // force stop jetpack for each client
         for (new client=1; client <= MaxClients; client++)
