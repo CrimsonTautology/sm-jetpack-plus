@@ -77,6 +77,8 @@ public OnPluginStart()
             "The time in seconds the jump key needs to be pressed before the jetpack starts"
             );
 
+    HookConVarChange(g_Cvar_Enabled, ConVarChanged:callback);
+
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Ignore, Param_Cell);
     g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Ignore, Param_Cell);
     g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Ignore, Param_Cell);
@@ -132,6 +134,22 @@ public Action:HeldJump(Handle:timer, any:player)
     }
 
     return Plugin_Handled;
+}
+
+public ConVarChanged:OnJetpackEnabledChange(Handle:convar, const String:old[], const String:new[])
+{
+    //When enabled state changes from enabled to disabled
+    if(StringToInt(old) !=0 && StringToInt(new) == 0)
+    {
+        // force stop jetpack for each client
+        for (new client=1; client <= MaxClients; client++)
+        {
+            if(IsClientUsingJetpack(client))
+            {
+                StopJetpack(client);
+            }
+        }
+    }
 }
 
 public _IsClientUsingJetpack(Handle:plugin, args) { return _:IsClientUsingJetpack(GetNativeCell(1)); }
