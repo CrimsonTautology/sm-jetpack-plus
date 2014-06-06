@@ -77,7 +77,7 @@ public OnPluginStart()
             "The time in seconds the jump key needs to be pressed before the jetpack starts"
             );
 
-    HookConVarChange(g_Cvar_Enabled, ConVarChanged:callback);
+    HookConVarChange(g_Cvar_Enabled, OnJetpackEnabledChange);
 
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Ignore, Param_Cell);
     g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Ignore, Param_Cell);
