@@ -12,9 +12,9 @@
             "en"    "[SM] TODO{1}{2}{3}."
     }
 
-    "phrase_3"
+    "donators_only"
     {
-        "en"    "TODO"
+        "en"    "[JP+]  Only donators can use this command."
     }
 
 

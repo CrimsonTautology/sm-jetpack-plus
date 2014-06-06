@@ -33,6 +33,8 @@ public Plugin:myinfo =
     url = "https://github.com/CrimsonTautology/sm_jetpack_plus"
 };
 
+new Handle:g_Cvar_DonatorsOnly = INVALID_HANDLE;
+
 new bool:g_DonatorLibraryExists = false;
 
 //Player options
@@ -50,6 +52,10 @@ new g_JetpackTypeCount = 0;
 public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
+
+    g_Cvar_DonatorsOnly = CreateConVar("sm_jetpack_donators_only", "0", "Whether only dontaors can change their jetpack bling");
+
+    RegConsoleCmd("sm_bling", Command_Bling, "Change jetpack bling.");
 
     g_Cookie_SelectedJetpack = RegClientCookie("selected_jetpack", "Selected jetpack type", CookieAccess_Private);
     g_DonatorLibraryExists = LibraryExists("donator.core");
@@ -144,6 +150,22 @@ ReadJetpacks()
     CloseHandle(kv);
 }
 
+public Action:Command_Bling(client, args)
+{
+    if(!DonatorCheck(client))
+    {
+        ReplyToCommand(client, "\x04%t", "donators_only");
+        return Plugin_Handled;
+    }
+
+    if(client)
+    {
+        ChangeJetpackMenu(client);
+    }
+
+    return Plugin_Handled;
+}
+
 public Action:OnStartJetpack(client)
 {
     ApplyJetpackEffects(client);
@@ -187,6 +209,15 @@ ClearJetpackEffects(client)
     DeleteParticle(g_JetpackParticle[client]);
 }
 
+//True if client can use a donator action. If donations are not enabled this
+//will always be true, otherwise check if client is a donator.
+public bool:DonatorCheck(client)
+{
+    if(!g_DonatorLibraryExists || !GetConVarBool(g_Cvar_DonatorsOnly))
+        return true;
+    else
+        return IsPlayerDonator(client);
+}
 //Menus
 public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu(client);
 ChangeJetpackMenu(client)
