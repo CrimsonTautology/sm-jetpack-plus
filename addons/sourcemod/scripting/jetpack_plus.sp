@@ -136,7 +136,7 @@ public Action:HeldJump(Handle:timer, any:player)
     return Plugin_Handled;
 }
 
-public ConVarChanged:OnJetpackEnabledChange(Handle:convar, const String:old[], const String:new[])
+public OnJetpackEnabledChange(Handle:convar, const String:old[], const String:new[])
 {
     //When enabled state changes from enabled to disabled
     if(bool:StringToInt(old) && !bool:StringToInt(new))
