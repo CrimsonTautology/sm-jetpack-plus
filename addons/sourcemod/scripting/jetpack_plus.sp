@@ -65,7 +65,12 @@ public OnPluginStart()
     g_Cvar_Enabled = CreateConVar(
             "sm_jetpack",
             "1",
-            "Set to 1 to enable the jetpack plugin");
+            "Set to 1 to enable the jetpack plugin",
+            0,
+            true,
+            0.0,
+            true,
+            1.0);
     g_Cvar_JetpackForce = CreateConVar(
             "sm_jetpack_force",
             "8.0",
@@ -77,6 +82,8 @@ public OnPluginStart()
             "The time in seconds the jump key needs to be pressed before the jetpack starts"
             );
 
+    HookConVarChange(g_Cvar_Enabled, OnEnabledChange);
+
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
     g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
     g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Event, Param_Cell, Param_FloatByRef, Param_CellByRef);
@@ -87,6 +94,7 @@ public OnPluginStart()
 
 public OnClientDisconnect(client)
 {
+    //Todo
     StopJetpack(client);
 }
 
@@ -94,14 +102,21 @@ public OnGameFrame()
 {
     if(AreJetpacksEnabled())
     {
-        for (new client=1; client <= MaxClients; client++)
-        {
-            //For each client using a jetpack
-            if(IsClientUsingJetpack(client))
-            {
-                JetpackStep(client);
-            }
-        }
+        StepAllJetpacks();
+    }
+}
+
+public OnEnabledChange(Handle:cvar, const String:oldValue[], const String:newValue[])
+{
+    if(cvar != g_Cvar_Enabled) return;
+
+    new bool:was_on = !!StringToInt(oldValue);
+    new bool:now_on = !!StringToInt(newValue);
+
+    //When changing from on to off
+    if(was_on && !now_on)
+    {
+        StopAllJetpacks();
     }
 }
 
@@ -199,6 +214,30 @@ JetpackStep(client)
     else
     {
         StopJetpack(client);
+    }
+}
+
+StepAllJetpacks()
+{
+    for (new client=1; client <= MaxClients; client++)
+    {
+        //For each client using a jetpack
+        if(IsClientUsingJetpack(client))
+        {
+            JetpackStep(client);
+        }
+    }
+}
+
+StopAllJetpacks()
+{
+    for (new client=1; client <= MaxClients; client++)
+    {
+        //For each client using a jetpack
+        if(IsClientUsingJetpack(client))
+        {
+            StopJetpack(client);
+        }
     }
 }
 
