@@ -14,8 +14,11 @@
 #include <sourcemod>
 #include <sdktools>
 #include <smlib/entities>
+#include <tags>
 
 #define PLUGIN_VERSION "0.1"
+
+#define JETPACK_TAG "jetpack"
 
 #define MOVECOLLIDE_DEFAULT		0
 #define MOVECOLLIDE_FLY_BOUNCE	1
@@ -83,6 +86,7 @@ public OnPluginStart()
             );
 
     HookConVarChange(g_Cvar_Enabled, OnEnabledChange);
+    AddServerTag2(JETPACK_TAG);
 
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
     g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
@@ -90,6 +94,11 @@ public OnPluginStart()
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
+}
+
+public OnPluginEnd()
+{
+    RemoveServerTag2(JETPACK_TAG);
 }
 
 public OnClientDisconnect(client)
@@ -119,6 +128,13 @@ public OnEnabledChange(Handle:cvar, const String:oldValue[], const String:newVal
     if(was_on && !now_on)
     {
         StopAllJetpacks();
+        RemoveServerTag2(JETPACK_TAG);
+    }
+
+    //When changing from off to on
+    if(!was_on && now_on)
+    {
+        AddServerTag2(JETPACK_TAG);
     }
 }
 
