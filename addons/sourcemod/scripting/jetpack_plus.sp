@@ -94,8 +94,10 @@ public OnPluginStart()
 
 public OnClientDisconnect(client)
 {
-    //Todo
-    StopJetpack(client);
+    if(AreJetpacksEnabled())
+    {
+        StopJetpack(client);
+    }
 }
 
 public OnGameFrame()
