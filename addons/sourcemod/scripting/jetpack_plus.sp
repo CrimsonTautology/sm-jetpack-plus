@@ -44,6 +44,7 @@ new Handle:g_Forward_OnJetpackStep= INVALID_HANDLE;
 new g_Offset_movecollide = -1;
 
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
+new bool:g_AdvertShown[MAXPLAYERS+1] = {false, ...};
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
@@ -85,6 +86,8 @@ public OnPluginStart()
             "The time in seconds the jump key needs to be pressed before the jetpack starts"
             );
 
+    
+    HookEvent("player_spawn", Event_PlayerSpawn);
     HookConVarChange(g_Cvar_Enabled, OnEnabledChange);
     AddServerTag2(JETPACK_TAG);
 
@@ -99,6 +102,11 @@ public OnPluginStart()
 public OnPluginEnd()
 {
     RemoveServerTag2(JETPACK_TAG);
+}
+
+public OnClientConnected(client)
+{
+    g_AdvertShown[client] = false;
 }
 
 public OnClientDisconnect(client)
@@ -135,6 +143,7 @@ public OnEnabledChange(Handle:cvar, const String:oldValue[], const String:newVal
     if(!was_on && now_on)
     {
         AddServerTag2(JETPACK_TAG);
+        PrintToChatAll("\x04%t", "jetpack_enabled_on_server");
     }
 }
 
@@ -165,6 +174,16 @@ public Action:HeldJump(Handle:timer, any:player)
     }
 
     return Plugin_Handled;
+}
+
+public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
+{
+    new client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+    if(g_AdvertShown[client] || !IsClientInGame(client) || !AreJetpacksEnabled()) return;
+
+    PrintToChat(client, "\x04%t", "jetpack_enabled_on_server");
+    g_AdvertShown[client] = true;
 }
 
 public _IsClientUsingJetpack(Handle:plugin, args) { return _:IsClientUsingJetpack(GetNativeCell(1)); }
