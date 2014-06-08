@@ -77,9 +77,9 @@ public OnPluginStart()
             "The time in seconds the jump key needs to be pressed before the jetpack starts"
             );
 
-    g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Ignore, Param_Cell);
-    g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Ignore, Param_Cell);
-    g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Ignore, Param_Cell);
+    g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
+    g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
+    g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Event, Param_Cell, Param_FloatByRef, Param_CellByRef);
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
