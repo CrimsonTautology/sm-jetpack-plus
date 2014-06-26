@@ -20,7 +20,7 @@
 #undef REQUIRE_PLUGIN
 #include <donator>
 
-#define PLUGIN_VERSION "0.1"
+#define PLUGIN_VERSION "1.0"
 
 #define MAX_JETPACK_TYPES 64
 
