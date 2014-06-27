@@ -6,7 +6,6 @@ env:
     - SMVERSION=2.0
 before_install:
     - sudo apt-get update
-    - sudo apt-get install gcc-multilib
     - sudo apt-get install lynx
 
 before_script:
