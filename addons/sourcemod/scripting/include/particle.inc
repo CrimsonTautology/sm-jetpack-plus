@@ -111,4 +111,3 @@ public Action:DeleteParticles(Handle:timer, any:particleRef)
     DeleteParticle(particleRef);
     return Plugin_Stop;
 }
-
