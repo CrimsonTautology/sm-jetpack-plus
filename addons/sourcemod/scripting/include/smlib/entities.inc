@@ -2138,3 +2138,4 @@ stock bool:Entity_AddOutput(entity, const String:input[], activator=-1, caller=-
 	return AcceptEntityInput(entity, "addoutput", activator, caller, outputid);
 }
 
+

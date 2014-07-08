@@ -65,3 +65,4 @@ native bool:AreJetpacksEnabled();
  * @return      True if using, else false
  */
 native bool:IsClientUsingJetpack(client);
+
