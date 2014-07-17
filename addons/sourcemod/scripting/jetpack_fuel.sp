@@ -15,6 +15,7 @@
 
 #include <sourcemod>
 #include <jetpack_plus>
+#include <sdktools>
 
 #define PLUGIN_VERSION "1.0"
 
@@ -33,6 +34,8 @@ public Plugin:myinfo =
 new Handle:g_Cvar_Enabled = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackFuelMax = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackRefuelingTime = INVALID_HANDLE;
+new Handle:g_Cvar_JetpackEmptySound = INVALID_HANDLE;
+new Handle:g_Cvar_JetpackRefuelSound = INVALID_HANDLE;
 
 //SoundFiles
 new String:g_Sound_Empty[PLATFORM_MAX_PATH];
@@ -114,7 +117,7 @@ public Action:OnJetpackStep(client, &Float:force, &bool:force_stop)
 public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 {
     new client = GetClientOfUserId(GetEventInt(event, "userid"));
-    RefuelJetpack(client);
+    RefuelClient(client);
 }
 
 OutOfFuel(client)
@@ -124,7 +127,7 @@ OutOfFuel(client)
     CreateTimer(GetConVarFloat(g_Cvar_JetpackRefuelingTime), AutoRefuel, player);
 }
 
-Action:AutoRefuel(Handle:timer, any:player)
+public Action:AutoRefuel(Handle:timer, any:player)
 {
     new client = GetClientOfUserId(player);
     if(client && IsPlayerAlive(client))
@@ -132,6 +135,8 @@ Action:AutoRefuel(Handle:timer, any:player)
         RefuelClient(client);
         EmitSoundToClient(client, g_Sound_Refuel);
     }
+
+    return Plugin_Handled;
 }
 
 bool:IsFuelEnabled()
@@ -146,11 +151,11 @@ GetFuelOfClient(client)
 
 UseFuelOfClient(client)
 {
-    g_Fuel[client] -= 1
+    g_Fuel[client] -= 1;
 }
 
 RefuelClient(client)
 {
-    g_Fuel[client] = GetConVarInt(g_Cvar_JetpackFuelMax)
+    g_Fuel[client] = GetConVarInt(g_Cvar_JetpackFuelMax);
 }
 
