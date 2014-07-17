@@ -38,7 +38,9 @@ new Handle:g_Cvar_JetpackForce = INVALID_HANDLE;
 new Handle:g_Cvar_JumpDelay = INVALID_HANDLE;
 
 new Handle:g_Forward_OnStartJetpack = INVALID_HANDLE;
+new Handle:g_Forward_OnStartJetpackPost = INVALID_HANDLE;
 new Handle:g_Forward_OnStopJetpack = INVALID_HANDLE;
+new Handle:g_Forward_OnStopJetpackPost = INVALID_HANDLE;
 new Handle:g_Forward_OnJetpackStep= INVALID_HANDLE;
 
 new g_Offset_movecollide = -1;
@@ -91,9 +93,11 @@ public OnPluginStart()
     HookConVarChange(g_Cvar_Enabled, OnEnabledChange);
     AddServerTag2(JETPACK_TAG);
 
-    g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
-    g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
-    g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Event, Param_Cell, Param_FloatByRef, Param_CellByRef);
+    g_Forward_OnStartJetpack     = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
+    g_Forward_OnStartJetpackPost = CreateGlobalForward("OnStartJetpackPost", ET_Ignore, Param_Cell);
+    g_Forward_OnStopJetpack      = CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
+    g_Forward_OnStopJetpackPost  = CreateGlobalForward("OnStopJetpackPost",  ET_Ignore, Param_Cell);
+    g_Forward_OnJetpackStep      = CreateGlobalForward("OnJetpackStep",  ET_Event, Param_Cell, Param_FloatByRef, Param_CellByRef);
 
     if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
         LogError("Could not find offset for CBaseEntity::movecollide");
@@ -211,6 +215,11 @@ StartJetpack(client)
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     ChangeEdictState(client);
     g_IsUsingJetpack[client] = true;
+
+    //Forward post event
+    Call_StartForward(g_Forward_OnStartJetpackPost);
+    Call_PushCell(client);
+    Call_Finish();
 }
 
 StopJetpack(client)
@@ -226,6 +235,11 @@ StopJetpack(client)
     SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
     ChangeEdictState(client);
     g_IsUsingJetpack[client] = false;
+
+    //Forward post event
+    Call_StartForward(g_Forward_OnStopJetpackPost);
+    Call_PushCell(client);
+    Call_Finish();
 }
 
 //Called each frame a client is using a jetpack
