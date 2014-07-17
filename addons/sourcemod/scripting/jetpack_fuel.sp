@@ -48,7 +48,7 @@ public OnPluginStart()
     g_Cvar_Enabled = CreateConVar(
             "sm_jetpack_fuel_enabled",
             "1",
-            "Set to 1 to require jetpacks to use fuel"
+            "Set to 1 to require jetpacks to use fuel",
             0,
             true,
             0.0,
