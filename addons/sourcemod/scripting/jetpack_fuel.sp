@@ -67,7 +67,7 @@ public OnPluginStart()
             "Time in seconds a player must wait until their jetpack refuels on their own");
     g_Cvar_JetpackEmptySound = CreateConVar(
             "sm_jetpack_empty_sound",
-            "",
+            "common/bugreporter_failed.wav",
             "Sound to play when the jetpack runs out of fuel");
     g_Cvar_JetpackRefuelSound = CreateConVar(
             "sm_jetpack_refuel_sound",
