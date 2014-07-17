@@ -34,6 +34,10 @@ new Handle:g_Cvar_Enabled = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackFuelMax = INVALID_HANDLE;
 new Handle:g_Cvar_JetpackRefuelingTime = INVALID_HANDLE;
 
+//SoundFiles
+new String:g_Sound_Empty[PLATFORM_MAX_PATH];
+new String:g_Sound_Refuel[PLATFORM_MAX_PATH];
+
 //Player values
 new g_Fuel[MAXPLAYERS+1] = {0, ...};
 
@@ -58,8 +62,26 @@ public OnPluginStart()
             "sm_jetpack_refueling_time",
             "30.0",
             "Time in seconds a player must wait until their jetpack refuels on their own");
+    g_Cvar_JetpackEmptySound = CreateConVar(
+            "sm_jetpack_empty_sound",
+            "",
+            "Sound to play when the jetpack runs out of fuel");
+    g_Cvar_JetpackRefuelSound = CreateConVar(
+            "sm_jetpack_refuel_sound",
+            "hl1/fvox/activated.wav",
+            "Sound to play when the jetpack auto-refuels");
+
 
     HookEvent("player_spawn", Event_PlayerSpawn);
+}
+
+public OnConfigsExecuted()
+{
+    GetConVarString(g_Cvar_JetpackEmptySound, g_Sound_Empty, sizeof(g_Sound_Empty));
+    PrecacheSound(g_Sound_Empty,true);
+
+    GetConVarString(g_Cvar_JetpackRefuelSound, g_Sound_Refuel, sizeof(g_Sound_Refuel));
+    PrecacheSound(g_Sound_Refuel,true);
 }
 
 public OnClientConnected(client)
@@ -98,7 +120,7 @@ public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 OutOfFuel(client)
 {
     new player = GetClientUserId(client);
-    //EmitSoundToClient(client, g_EmptySound);
+    EmitSoundToClient(client, g_Sound_Empty);
     CreateTimer(GetConVarFloat(g_Cvar_JetpackRefuelingTime), AutoRefuel, player);
 }
 
@@ -108,7 +130,7 @@ Action:AutoRefuel(Handle:timer, any:player)
     if(client && IsPlayerAlive(client))
     {
         RefuelClient(client);
-        //EmitSoundToClient(client, g_RefuelSound);
+        EmitSoundToClient(client, g_Sound_Refuel);
     }
 }
 
