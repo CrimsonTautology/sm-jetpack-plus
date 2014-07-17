@@ -59,7 +59,7 @@ public OnPluginStart()
             1.0);
     g_Cvar_JetpackFuelMax = CreateConVar(
             "sm_jetpack_fuel",
-            "600",
+            "200",
             "The ammount of fuel a player starts with");
     g_Cvar_JetpackRefuelingTime = CreateConVar(
             "sm_jetpack_refueling_time",
@@ -95,7 +95,8 @@ public OnClientConnected(client)
 public Action:OnStartJetpack(client)
 {
     if(!IsFuelEnabled()) return Plugin_Continue;
-    if(GetFuelOfClient(client))return Plugin_Handled;
+    if(GetFuelOfClient(client) <= 0)return Plugin_Handled;
+    PrintToChat(client, "%d", GetFuelOfClient(client));
     return Plugin_Continue;
 }
 
@@ -118,6 +119,7 @@ public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 {
     new client = GetClientOfUserId(GetEventInt(event, "userid"));
     RefuelClient(client);
+    PrintToChat(client, "%d", GetFuelOfClient(client)); //TODO
 }
 
 OutOfFuel(client)
@@ -152,6 +154,7 @@ GetFuelOfClient(client)
 UseFuelOfClient(client)
 {
     g_Fuel[client] -= 1;
+    PrintToChat(client, "%d", GetFuelOfClient(client)); //TODO
 }
 
 RefuelClient(client)
