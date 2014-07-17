@@ -59,7 +59,7 @@ public OnPluginStart()
             1.0);
     g_Cvar_JetpackFuelMax = CreateConVar(
             "sm_jetpack_fuel",
-            "100",
+            "600",
             "The ammount of fuel a player starts with");
     g_Cvar_JetpackRefuelingTime = CreateConVar(
             "sm_jetpack_refueling_time",
