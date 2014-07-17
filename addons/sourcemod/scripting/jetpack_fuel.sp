@@ -41,8 +41,19 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
-    g_Cvar_Enabled = CreateConVar("sm_jetpack_fuel_enabled", "1", "Whether the fueling system is enabled");
-    g_Cvar_JetpackFuelMax = CreateConVar("sm_jetpack_fuel", "100", "The max fuel value");
+    g_Cvar_Enabled = CreateConVar(
+            "sm_jetpack_fuel_enabled",
+            "1",
+            "Set to 1 to require jetpacks to use fuel"
+            0,
+            true,
+            0.0,
+            true,
+            1.0);
+    g_Cvar_JetpackFuelMax = CreateConVar(
+            "sm_jetpack_fuel",
+            "100",
+            "The ammount of fuel a player starts with");
     g_Cvar_JetpackRefuelingTime = CreateConVar("sm_jetpack_refueling_time", "30.0", "Time in seconds a player must wait until their jetpack refuels on their own");
 }
 
