@@ -73,7 +73,7 @@ public OnAllPluginsLoaded()
 {
     if (g_DonatorLibraryExists)
     {
-        Donator_RegisterMenuItem("Change Jetpack Bling", JetpackBlingMenu);
+        Donator_RegisterMenuItem("Jetpack Effects", JetpackBlingMenu);
     }
 }
 
