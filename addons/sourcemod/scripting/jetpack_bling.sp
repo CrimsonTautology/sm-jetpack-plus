@@ -23,6 +23,7 @@
 #define PLUGIN_VERSION "1.0"
 
 #define MAX_JETPACK_TYPES 64
+#define DEFAULT_JETPACK   0
 
 public Plugin:myinfo =
 {
@@ -39,7 +40,7 @@ new bool:g_DonatorLibraryExists = false;
 
 //Player options
 new Handle:g_Cookie_SelectedJetpack = INVALID_HANDLE;
-new g_SelectedJetpack[MAXPLAYERS+1] = {0, ...};
+new g_SelectedJetpack[MAXPLAYERS+1] = {DEFAULT_JETPACK, ...};
 new g_JetpackParticle[MAXPLAYERS+1];
 
 //Parallel arrays to store types of jetpacks
@@ -73,7 +74,7 @@ public OnAllPluginsLoaded()
 {
     if (g_DonatorLibraryExists)
     {
-        Donator_RegisterMenuItem("Change Jetpack Bling", JetpackBlingMenu);
+        Donator_RegisterMenuItem("Jetpack Effects", JetpackBlingMenu);
     }
 }
 
@@ -101,6 +102,8 @@ public OnClientCookiesCached(client)
     new type_of = StringToInt(buffer);
     if (strlen(buffer) > 0 && type_of < g_JetpackTypeCount){
         g_SelectedJetpack[client] = type_of;
+    }else{
+        g_SelectedJetpack[client] = DEFAULT_JETPACK;
     }
 }
 
