@@ -16,7 +16,7 @@
 #include <smlib/entities>
 #include <tags>
 
-#define PLUGIN_VERSION "1.0"
+#define PLUGIN_VERSION "1.1"
 
 #define JETPACK_TAG "jetpack"
 
