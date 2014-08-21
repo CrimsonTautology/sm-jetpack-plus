@@ -17,6 +17,7 @@
 #include <clientprefs>
 #include <sdktools>
 #include <particle>
+#include <smlib/general>
 #undef REQUIRE_PLUGIN
 #include <donator>
 
@@ -139,6 +140,19 @@ ReadJetpacks()
                 KvGetString(kv, "name", g_JetpackTypeName[g_JetpackTypeCount], PLATFORM_MAX_PATH);
                 KvGetString(kv, "particle", g_JetpackTypeParticle[g_JetpackTypeCount], PLATFORM_MAX_PATH);
                 KvGetString(kv, "sound", g_JetpackTypeSound[g_JetpackTypeCount], PLATFORM_MAX_PATH);
+
+                if(bool:KvGetNum(kv, "particle_precache_required", 0))
+                {
+                    PrecacheParticleSystem(g_JetpackTypeParticle[g_JetpackTypeCount]);
+                }
+                if(bool:KvGetNum(kv, "particle_download_required", 0))
+                {
+                    AddFileToDownloadsTable(g_JetpackTypeParticle[g_JetpackTypeCount]);
+                }
+                if(bool:KvGetNum(kv, "sound_download_required", 0))
+                {
+                    AddFileToDownloadsTable(g_JetpackTypeSound[g_JetpackTypeCount]);
+                }
 
                 PrecacheSound(g_JetpackTypeSound[g_JetpackTypeCount], true);
                 g_JetpackTypeCount++;
