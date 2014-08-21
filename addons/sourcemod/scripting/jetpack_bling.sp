@@ -115,12 +115,7 @@ public OnMapStart()
 
 ReadJetpacks()
 {
-    //Create default jetpack
-    g_JetpackTypeName[0] = "Default";
-    g_JetpackTypeParticle[0] = "burninggibs";
-    g_JetpackTypeSound[0] = "vehicles/airboat/fan_blade_fullthrottle_loop1.wav";
-    PrecacheSound(g_JetpackTypeSound[0], true);
-    g_JetpackTypeCount = 1;
+    g_JetpackTypeCount = 0;
 
     new Handle:kv = CreateKeyValues("Jetpacks");
 
