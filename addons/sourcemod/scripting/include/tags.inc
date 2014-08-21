@@ -1,5 +1,11 @@
 //https://forums.alliedmods.net/showthread.php?t=171305?t=171305
 
+#if defined _tags_included_
+#endinput
+#endif
+#define _tags_included_
+
+
 /**
  * Adds an informational string to the server's public "tags".
  * This string should be a short, unique identifier.
