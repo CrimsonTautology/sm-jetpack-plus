@@ -119,8 +119,11 @@ ReadJetpacks()
 
     new Handle:kv = CreateKeyValues("Jetpacks");
 
-    decl String:path[PLATFORM_MAX_PATH], String:tmp[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), "configs/jetpacks.cfg");
+    //Find the jetpack config file for the current game, if one exists
+    decl String:path[PLATFORM_MAX_PATH], String:tmp[PLATFORM_MAX_PATH], String:game_folder[PLATFORM_MAX_PATH];
+    GetGameFolderName(game_folder, sizeof(game_folder));
+    Format(tmp, sizeof(tmp) "configs/jetpacks.%s.cfg", game_folder);
+    BuildPath(Path_SM, path, sizeof(path), tmp);
 
     if(FileExists(path))
     {
