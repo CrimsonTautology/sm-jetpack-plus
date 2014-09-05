@@ -41,8 +41,6 @@ new Handle:g_Forward_OnStartJetpack = INVALID_HANDLE;
 new Handle:g_Forward_OnStopJetpack = INVALID_HANDLE;
 new Handle:g_Forward_OnJetpackStep= INVALID_HANDLE;
 
-new g_Offset_movecollide = -1;
-
 new bool:g_IsUsingJetpack[MAXPLAYERS+1] = {false, ...};
 new bool:g_AdvertShown[MAXPLAYERS+1] = {false, ...};
 
@@ -94,9 +92,6 @@ public OnPluginStart()
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
     g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
     g_Forward_OnJetpackStep =  CreateGlobalForward("OnJetpackStep",  ET_Event, Param_Cell, Param_FloatByRef, Param_CellByRef);
-
-    if((g_Offset_movecollide = FindSendPropOffs("CBaseEntity", "movecollide")) == -1)
-        LogError("Could not find offset for CBaseEntity::movecollide");
 }
 
 public OnPluginEnd()
@@ -290,6 +285,5 @@ JetpackPush(client, Float:force)
 
 SetEntityMoveCollide(entity, movecollide)
 {
-    if(g_Offset_movecollide == -1) return;
-    SetEntData(entity, g_Offset_movecollide, movecollide);
+    SetEntProp(entity, Prop_Data, "m_MoveCollide", movecollide)
 }
