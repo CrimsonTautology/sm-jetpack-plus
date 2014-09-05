@@ -285,5 +285,5 @@ JetpackPush(client, Float:force)
 
 SetEntityMoveCollide(entity, movecollide)
 {
-    SetEntProp(entity, Prop_Data, "m_MoveCollide", movecollide)
+    SetEntProp(entity, Prop_Data, "m_MoveCollide", movecollide);
 }
