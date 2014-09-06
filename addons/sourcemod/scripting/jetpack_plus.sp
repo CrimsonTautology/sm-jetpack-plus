@@ -203,7 +203,7 @@ StartJetpack(client)
     Call_Finish(result);
     if(result == Plugin_Handled) return;
 
-    SetEntityMoveType(client, MOVETYPE_FLYGRAVITY);
+    SetEntityMoveType(client, MOVETYPE_FLY);
     SetEntityMoveCollide(client, MOVECOLLIDE_FLY_BOUNCE);
     ChangeEdictState(client);
     g_IsUsingJetpack[client] = true;
