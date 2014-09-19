@@ -66,6 +66,6 @@ stock RemoveServerTag3(const String:tag[])
     ReplaceString(new_tags, sizeof(new_tags), ",,", "");
     new flags = GetConVarFlags(sv_tags);
     SetConVarFlags(sv_tags, flags & ~FCVAR_NOTIFY);
-    SetConVarString(sv_tags, newtags);
+    SetConVarString(sv_tags, new_tags);
     SetConVarFlags(sv_tags, flags);
 }

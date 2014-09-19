@@ -89,7 +89,7 @@ public OnPluginStart()
     
     HookEvent("player_spawn", Event_PlayerSpawn);
     HookConVarChange(g_Cvar_Enabled, OnEnabledChange);
-    AddServerTag2(JETPACK_TAG);
+    AddServerTag3(JETPACK_TAG);
 
     g_Forward_OnStartJetpack = CreateGlobalForward("OnStartJetpack", ET_Event, Param_Cell);
     g_Forward_OnStopJetpack =  CreateGlobalForward("OnStopJetpack",  ET_Event, Param_Cell);
