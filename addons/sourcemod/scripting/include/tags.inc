@@ -17,7 +17,7 @@
 stock AddServerTag3(const String:tag[])
 {
     decl String:current_tags[128];
-    new Handle:sv_tags = FindConVar("sv_tags")
+    new Handle:sv_tags = FindConVar("sv_tags");
 
     if (sv_tags == INVALID_HANDLE)
     {
@@ -48,7 +48,7 @@ stock AddServerTag3(const String:tag[])
 stock RemoveServerTag3(const String:tag[])
 {
     decl String:new_tags[128];
-    new Handle:sv_tags = FindConVar("sv_tags")
+    new Handle:sv_tags = FindConVar("sv_tags");
 
     if (sv_tags == INVALID_HANDLE)
     {
