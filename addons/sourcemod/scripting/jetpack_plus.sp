@@ -98,7 +98,7 @@ public OnPluginStart()
 
 public OnPluginEnd()
 {
-    RemoveServerTag2(JETPACK_TAG);
+    RemoveServerTag3(JETPACK_TAG);
 }
 
 public OnClientConnected(client)
@@ -133,13 +133,13 @@ public OnEnabledChange(Handle:cvar, const String:oldValue[], const String:newVal
     if(was_on && !now_on)
     {
         StopAllJetpacks();
-        RemoveServerTag2(JETPACK_TAG);
+        RemoveServerTag3(JETPACK_TAG);
     }
 
     //When changing from off to on
     if(!was_on && now_on)
     {
-        AddServerTag2(JETPACK_TAG);
+        AddServerTag3(JETPACK_TAG);
         PrintToChatAll("\x04%t", "jetpack_enabled_on_server");
     }
 }

@@ -1,10 +1,10 @@
-//https://forums.alliedmods.net/showthread.php?t=171305?t=171305
+//Logic stolen from Flyflo's GoombaStomp plugin;  other implementations are terrible
+//https://github.com/Flyflo/SM-Goomba-Stomp
 
 #if defined _tags_included_
 #endinput
 #endif
 #define _tags_included_
-
 
 /**
  * Adds an informational string to the server's public "tags".
@@ -14,25 +14,29 @@
  * @param tag            Tag string to append.
  * @noreturn
  */
-stock AddServerTag2(const String:tag[])
+stock AddServerTag3(const String:tag[])
 {
-    new Handle:hTags = INVALID_HANDLE;
-    hTags = FindConVar("sv_tags");
-    if(hTags != INVALID_HANDLE)
+    decl String:current_tags[128];
+    new Handle:sv_tags = FindConVar("sv_tags")
+
+    if (sv_tags == INVALID_HANDLE)
     {
-        decl String:tags[256];
-        GetConVarString(hTags, tags, sizeof(tags));
-        if(StrContains(tags, tag, true) > 0) return;
-        if(strlen(tags) == 0)
-        {
-            Format(tags, sizeof(tags), tag);
-        }
-        else
-        {
-            Format(tags, sizeof(tags), "%s,%s", tags, tag);
-        }
-        SetConVarString(hTags, tags, true);
+        return;
     }
+
+    GetConVarString(sv_tags, current_tags, sizeof(current_tags));
+    if (StrContains(current_tags, tag) > -1)
+    {
+        // already have tag
+        return;
+    }
+
+    decl String:new_tags[128];
+    Format(new_tags, sizeof(new_tags), "%s%s%s", current_tags, (current_tags[0]!=0)?",":"", tag);
+    new flags = GetConVarFlags(sv_tags);
+    SetConVarFlags(sv_tags, flags & ~FCVAR_NOTIFY);
+    SetConVarString(sv_tags, new_tags);
+    SetConVarFlags(sv_tags, flags);
 }
 
 /**
@@ -41,51 +45,27 @@ stock AddServerTag2(const String:tag[])
  * @param tag            Tag string to remove.
  * @noreturn
  */
-stock RemoveServerTag2(const String:tag[])
+stock RemoveServerTag3(const String:tag[])
 {
-    new Handle:hTags = INVALID_HANDLE;
-    hTags = FindConVar("sv_tags");
-    if(hTags != INVALID_HANDLE)
+    decl String:new_tags[128];
+    new Handle:sv_tags = FindConVar("sv_tags")
+
+    if (sv_tags == INVALID_HANDLE)
     {
-        decl String:tags[50]; //max size of sv_tags cvar
-        GetConVarString(hTags, tags, sizeof(tags));
-        if(StrEqual(tags, tag, true))
-        {
-            Format(tags, sizeof(tags), "");
-            SetConVarString(hTags, tags, true);
-            return;
-        }
-        new pos = StrContains(tags, tag, true);
-        new len = strlen(tags);
-        if(len > 0 && pos > -1)
-        {
-            new bool:found;
-            new String:taglist[50][50];
-            ExplodeString(tags, ",", taglist, sizeof(taglist[]), sizeof(taglist));
-            for(new i;i < sizeof(taglist[]);i++)
-            {
-                if(StrEqual(taglist[i], tag, true))
-                {
-                    Format(taglist[i], sizeof(taglist), "");
-                    found = true;
-                    break;
-                }
-            }    
-            if(!found) return;
-            ImplodeStrings(taglist, sizeof(taglist[]), ",", tags, sizeof(tags));
-            if(pos == 0)
-            {
-                tags[0] = 0x20;
-            }    
-            else if(pos == len-1)
-            {
-                Format(tags[strlen(tags)-1], sizeof(tags), "");
-            }    
-            else
-            {
-                ReplaceString(tags, sizeof(tags), ",,", ",");
-            }    
-            SetConVarString(hTags, tags, true);
-        }
-    }    
-}  
+        return;
+    }
+
+    GetConVarString(sv_tags, new_tags, sizeof(new_tags));
+    if (StrContains(new_tags, tag) == -1)
+    {
+        // tag isn't on here, just bug out
+        return;
+    }
+
+    ReplaceString(new_tags, sizeof(new_tags), tag, "");
+    ReplaceString(new_tags, sizeof(new_tags), ",,", "");
+    new flags = GetConVarFlags(sv_tags);
+    SetConVarFlags(sv_tags, flags & ~FCVAR_NOTIFY);
+    SetConVarString(sv_tags, newtags);
+    SetConVarFlags(sv_tags, flags);
+}
