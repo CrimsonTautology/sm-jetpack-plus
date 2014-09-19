@@ -16,7 +16,8 @@
 #include <smlib/entities>
 #include <tags>
 
-#define PLUGIN_VERSION "1.1"
+#define PLUGIN_VERSION "1.2.0"
+#define PLUGIN_NAME "Jetpack Plus"
 
 #define JETPACK_TAG "jetpack"
 
@@ -25,7 +26,7 @@
 
 public Plugin:myinfo =
 {
-    name = "Jetpack Plus",
+    name = PLUGIN_NAME,
     author = "CrimsonTautology",
     description = "Let client's fly around by holding jump.",
     version = PLUGIN_VERSION,
@@ -64,6 +65,7 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
+    CreateConVar("sm_jetpack_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_PLUGIN | FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
     g_Cvar_Enabled = CreateConVar(
             "sm_jetpack",
             "1",

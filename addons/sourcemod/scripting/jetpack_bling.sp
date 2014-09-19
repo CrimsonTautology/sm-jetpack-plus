@@ -20,14 +20,15 @@
 #undef REQUIRE_PLUGIN
 #include <donator>
 
-#define PLUGIN_VERSION "1.1"
+#define PLUGIN_VERSION "1.2.0"
+#define PLUGIN_NAME "Jetpack Plus (Bling)"
 
 #define MAX_JETPACK_TYPES 64
 #define DEFAULT_JETPACK   0
 
 public Plugin:myinfo =
 {
-    name = "Jetpack Plus (Bling)",
+    name = PLUGIN_NAME,
     author = "CrimsonTautology",
     description = "Handles sounds and particle effects for jetpacks",
     version = PLUGIN_VERSION,
@@ -54,6 +55,7 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
+    CreateConVar("sm_jetpack_bling_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_PLUGIN | FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
     g_Cvar_DonatorsOnly = CreateConVar("sm_jetpack_donators_only", "0", "Whether only dontaors can change their jetpack bling");
 
     RegConsoleCmd("sm_bling", Command_Bling, "Change jetpack bling.");
