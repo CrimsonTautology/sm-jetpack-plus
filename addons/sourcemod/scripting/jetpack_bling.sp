@@ -17,6 +17,7 @@
 #include <clientprefs>
 #include <sdktools>
 #include <particle>
+#include <smlib/general>
 #undef REQUIRE_PLUGIN
 #include <donator>
 
@@ -116,17 +117,15 @@ public OnMapStart()
 
 ReadJetpacks()
 {
-    //Create default jetpack
-    g_JetpackTypeName[0] = "Default";
-    g_JetpackTypeParticle[0] = "burninggibs";
-    g_JetpackTypeSound[0] = "vehicles/airboat/fan_blade_fullthrottle_loop1.wav";
-    PrecacheSound(g_JetpackTypeSound[0], true);
-    g_JetpackTypeCount = 1;
+    g_JetpackTypeCount = 0;
 
     new Handle:kv = CreateKeyValues("Jetpacks");
 
-    decl String:path[PLATFORM_MAX_PATH], String:tmp[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), "configs/jetpacks.cfg");
+    //Find the jetpack config file for the current game, if one exists
+    decl String:path[PLATFORM_MAX_PATH], String:tmp[PLATFORM_MAX_PATH], String:game_folder[PLATFORM_MAX_PATH];
+    GetGameFolderName(game_folder, sizeof(game_folder));
+    Format(tmp, sizeof(tmp), "configs/jetpacks.%s.cfg", game_folder);
+    BuildPath(Path_SM, path, sizeof(path), tmp);
 
     if(FileExists(path))
     {
@@ -138,12 +137,7 @@ ReadJetpacks()
             KvGetSectionName(kv, tmp, sizeof(tmp));
             if(StrEqual(tmp, "Jetpack") )
             {
-                KvGetString(kv, "name", g_JetpackTypeName[g_JetpackTypeCount], PLATFORM_MAX_PATH);
-                KvGetString(kv, "particle", g_JetpackTypeParticle[g_JetpackTypeCount], PLATFORM_MAX_PATH);
-                KvGetString(kv, "sound", g_JetpackTypeSound[g_JetpackTypeCount], PLATFORM_MAX_PATH);
-
-                PrecacheSound(g_JetpackTypeSound[g_JetpackTypeCount], true);
-                g_JetpackTypeCount++;
+                KvGetJetpack(kv, g_JetpackTypeCount);
             }
 
         } while(KvGotoNextKey(kv) && g_JetpackTypeCount < MAX_JETPACK_TYPES);
@@ -153,6 +147,29 @@ ReadJetpacks()
     }
 
     CloseHandle(kv);
+}
+
+KvGetJetpack(Handle:kv, &index)
+{
+    KvGetString(kv, "name", g_JetpackTypeName[index], PLATFORM_MAX_PATH);
+    KvGetString(kv, "particle", g_JetpackTypeParticle[index], PLATFORM_MAX_PATH);
+    KvGetString(kv, "sound", g_JetpackTypeSound[index], PLATFORM_MAX_PATH);
+
+    if(bool:KvGetNum(kv, "particle_precache_required", 0))
+    {
+        PrecacheParticleSystem(g_JetpackTypeParticle[index]);
+    }
+    if(bool:KvGetNum(kv, "particle_download_required", 0))
+    {
+        AddFileToDownloadsTable(g_JetpackTypeParticle[index]);
+    }
+    if(bool:KvGetNum(kv, "sound_download_required", 0))
+    {
+        AddFileToDownloadsTable(g_JetpackTypeSound[index]);
+    }
+
+    PrecacheSound(g_JetpackTypeSound[index], true);
+    index++;
 }
 
 public Action:Command_Bling(client, args)
