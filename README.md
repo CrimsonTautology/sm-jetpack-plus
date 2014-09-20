@@ -23,12 +23,13 @@ Rewrite of Knagg0 and naris's [jetpack plugin](https://forums.alliedmods.net/sho
 
 # Jetpack Bling
 * Separate plugin to handle the sounds and particle effects; gives jetpacks their "bling"
-* You can add your own!  Just edit `addons/sourcemod/configs/jetpacks.cfg`
+* You can add your own!  Just edit `addons/sourcemod/configs/jetpacks.<modname>.cfg`
+* The plugin will dynamicly load the config file for the corresponding game so you don't have to worry about incompatible sounds or particles.
 * Players can choose their jetpack's effects by typing `!bling` into chat.
 * If the donator plugin is installed; this plugin can be restricted such that only donators can change their bling.
 * `sm_jetpack_donators_only` - Set to 1 to prevent non-donators from changing their jetpack effects
 
 # Notes
 * This has only been tested with TF2 but should work in other games, except...
-* The custom particle and sound effects will definitely not work in other mods, you will have to edit the jetpacks.cfg file.  If you want to add some for other mods send a pull request.
+* I have only made a bling config for TF2, you will have to create your own `addons/sourcemod/configs/jetpacks.<modname>.cfg` file for other games.  If you want to add some for other mods send a pull request.
 
