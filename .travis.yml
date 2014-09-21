@@ -27,7 +27,6 @@ before_script:
 script: 
     - ./spcomp jetpack_plus.sp
     - ./spcomp jetpack_bling.sp
-    - ./spcomp jetpack_fuel.sp
 
 after_script:
     - ls *.smx
