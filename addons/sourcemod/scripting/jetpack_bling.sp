@@ -188,13 +188,13 @@ public Action:Command_Bling(client, args)
     return Plugin_Handled;
 }
 
-public Action:OnStartJetpack(client)
+public Action:OnStartJetpackPost(client)
 {
     ApplyJetpackEffects(client);
     return Plugin_Continue;
 }
 
-public Action:OnStopJetpack(client)
+public Action:OnStopJetpackPost(client)
 {
     ClearJetpackEffects(client);
 
