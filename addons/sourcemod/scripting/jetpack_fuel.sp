@@ -59,11 +59,11 @@ public OnPluginStart()
             1.0);
     g_Cvar_JetpackFuelMax = CreateConVar(
             "sm_jetpack_fuel",
-            "200",
+            "300",
             "The ammount of fuel a player starts with");
     g_Cvar_JetpackRefuelingTime = CreateConVar(
             "sm_jetpack_refueling_time",
-            "30.0",
+            "10.0",
             "Time in seconds a player must wait until their jetpack refuels on their own");
     g_Cvar_JetpackEmptySound = CreateConVar(
             "sm_jetpack_empty_sound",
