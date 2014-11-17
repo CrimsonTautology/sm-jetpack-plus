@@ -229,7 +229,7 @@ StopJetpack(client)
     Call_Finish(result);
     if(result == Plugin_Handled) return;
 
-    if(!IsValidEntity(client))
+    if(IsClientConnected(client))
     {
         SetEntityMoveType(client, MOVETYPE_WALK);
         SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
