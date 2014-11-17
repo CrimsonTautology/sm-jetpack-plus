@@ -16,7 +16,7 @@
 #include <smlib/entities>
 #include <tags>
 
-#define PLUGIN_VERSION "1.2.0"
+#define PLUGIN_VERSION "1.2.1"
 #define PLUGIN_NAME "Jetpack Plus"
 
 #define JETPACK_TAG "jetpack"
@@ -229,9 +229,12 @@ StopJetpack(client)
     Call_Finish(result);
     if(result == Plugin_Handled) return;
 
-    SetEntityMoveType(client, MOVETYPE_WALK);
-    SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
-    ChangeEdictState(client);
+    if(!IsClientInGame(client))
+    {
+        SetEntityMoveType(client, MOVETYPE_WALK);
+        SetEntityMoveCollide(client, MOVECOLLIDE_DEFAULT);
+        ChangeEdictState(client);
+    }
     g_IsUsingJetpack[client] = false;
 
     //Forward post event
