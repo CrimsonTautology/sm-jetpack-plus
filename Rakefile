@@ -13,8 +13,8 @@ SCRIPTING    = 'addons/sourcemod/scripting/'
 PLUGINS      = 'addons/sourcemod/plugins/'
 EXTENSIONS   = 'addons/sourcemod/extensions/'
 TRANSLATIONS = 'addons/sourcemod/translations/'
-CONFIGS2     = 'addons/sourcemod/configs/'
-CONFIGS      = 'cfg/sourcemod/'
+CONFIGS      = 'addons/sourcemod/configs/'
+CFG          = 'cfg/sourcemod/'
  
 task :default => [:compile, :install, :reload]
  
@@ -43,10 +43,10 @@ task :install do
   install_filetype '*.so', EXTENSIONS, false
 
   #Install default configfiles if they don't exist
-  install_filetype '*.cfg', CONFIGS, false
+  install_filetype '*.cfg', CFG, false
 
   #Install data configfiles
-  install_filetype '*.cfg', CONFIGS2
+  install_filetype '*.cfg', CONFIGS
 end
  
 desc "Clean up compiled files"
@@ -119,10 +119,14 @@ end
 
 def install_filetype glob, subdirectory, overwrite=true
   fail 'Enviornment variable "SOURCEMOD_DEV_SERVER" not set' unless SERVER
+  return unless File.directory?(File.join(PROJECT_ROOT, subdirectory))
 
   Dir.chdir File.join(PROJECT_ROOT, subdirectory)
   Dir.glob(glob) do |f|
     path = File.join(SERVER, subdirectory, f)
+    disabled = File.join(SERVER, subdirectory, "disabled", f)
+    next if FileTest.exists?(disabled)
+
     if overwrite || !FileTest.exists?(path)
       FileUtils.cp(f, path)
       puts "install #{f}"
