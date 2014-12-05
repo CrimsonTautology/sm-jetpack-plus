@@ -16,7 +16,7 @@
 #include <smlib/entities>
 #include <tags>
 
-#define PLUGIN_VERSION "1.2.1"
+#define PLUGIN_VERSION "1.2.2"
 #define PLUGIN_NAME "Jetpack Plus"
 
 #define JETPACK_TAG "jetpack"
@@ -72,7 +72,7 @@ public OnPluginStart()
             "sm_jetpack",
             "1",
             "Set to 1 to enable the jetpack plugin",
-            0,
+            FCVAR_PLUGIN | FCVAR_REPLICATED | FCVAR_NOTIFY,
             true,
             0.0,
             true,
