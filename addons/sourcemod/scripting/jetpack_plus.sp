@@ -169,6 +169,7 @@ public Action:HeldJump(Handle:timer, any:player)
 
     if(client <= 0) return Plugin_Handled;
     if(!IsClientInGame(client)) return Plugin_Handled;
+    if(!IsPlayerAlive(client)) return Plugin_Handled;
     if(!AreJetpacksEnabled()) return Plugin_Handled;
 
     if(!IsClientUsingJetpack(client) && GetClientButtons(client) & IN_JUMP)
