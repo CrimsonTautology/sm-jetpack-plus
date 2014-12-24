@@ -100,8 +100,7 @@ stock DeleteParticle(particleRef)
         GetEdictClassname(particle, classname, sizeof(classname));
         if (StrEqual(classname, "info_particle_system", false))
         {
-            AcceptEntityInput(particle, "stop");
-            RemoveEdict(particle);
+            AcceptEntityInput(particle, "Kill");
         }
     }
 }
