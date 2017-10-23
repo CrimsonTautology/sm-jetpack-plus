@@ -21,7 +21,7 @@
 #undef REQUIRE_PLUGIN
 #include <donator>
 
-#define PLUGIN_VERSION "1.2.1"
+#define PLUGIN_VERSION "1.2.3"
 #define PLUGIN_NAME "Jetpack Plus (Bling)"
 
 #define MAX_JETPACK_TYPES 64
