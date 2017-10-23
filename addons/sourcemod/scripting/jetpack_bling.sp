@@ -56,7 +56,7 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
-    CreateConVar("sm_jetpack_bling_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_PLUGIN | FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
+    CreateConVar("sm_jetpack_bling_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
     g_Cvar_DonatorsOnly = CreateConVar("sm_jetpack_donators_only", "0", "Whether only dontaors can change their jetpack bling");
 
     RegConsoleCmd("sm_bling", Command_Bling, "Change jetpack bling.");

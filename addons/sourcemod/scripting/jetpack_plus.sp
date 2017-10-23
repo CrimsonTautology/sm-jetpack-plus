@@ -67,12 +67,12 @@ public OnPluginStart()
 {
     LoadTranslations("jetpack_plus.phrases");
 
-    CreateConVar("sm_jetpack_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_PLUGIN | FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
+    CreateConVar("sm_jetpack_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
     g_Cvar_Enabled = CreateConVar(
             "sm_jetpack",
             "1",
             "Set to 1 to enable the jetpack plugin",
-            FCVAR_PLUGIN | FCVAR_REPLICATED | FCVAR_NOTIFY,
+            FCVAR_REPLICATED | FCVAR_NOTIFY,
             true,
             0.0,
             true,
