@@ -1,7 +1,14 @@
-#compiled files
+# compiled files
 *.smx
-*.exe
-*.o
+*.asm
+*.lst
+*.so
 
-#vim files
+# vim files
 *.sw*
+
+# tags
+tags
+
+# release
+*release.tar.gz

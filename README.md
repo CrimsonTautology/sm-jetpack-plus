@@ -11,9 +11,6 @@ Rewrite of Knagg0 and naris's [jetpack plugin](https://forums.alliedmods.net/sho
 
     
 
-##Requirements
-* [Donator Interface](https://forums.alliedmods.net/showthread.php?t=145542)(Optional)
-
 # Jetpack
 
 * There is no longer a need for a player to bind a key to +sm_jetpack.  To use the jetpack just hold down the jump key.
@@ -26,8 +23,6 @@ Rewrite of Knagg0 and naris's [jetpack plugin](https://forums.alliedmods.net/sho
 * You can add your own!  Just edit `addons/sourcemod/configs/jetpacks.<modname>.cfg`
 * The plugin will dynamicly load the config file for the corresponding game so you don't have to worry about incompatible sounds or particles.
 * Players can choose their jetpack's effects by typing `!bling` into chat.
-* If the donator plugin is installed; this plugin can be restricted such that only donators can change their bling.
-* `sm_jetpack_donators_only` - Set to 1 to prevent non-donators from changing their jetpack effects
 
 # Notes
 * This has only been tested with TF2 but should work in other games, except...
