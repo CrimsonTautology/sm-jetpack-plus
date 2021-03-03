@@ -2,8 +2,7 @@
  * vim: set ts=4 :
  * =============================================================================
  * Jetpack Plus
- * Handles the sounds and particle effects for the jetpacks.  Also allows
- * donators to customize their jetpack.
+ * Handles the sounds and particle effects for the jetpacks.
  *
  * Copyright 2014 CrimsonTautology
  * =============================================================================
@@ -18,10 +17,8 @@
 #include <sdktools>
 #include <particle>
 #include <smlib/general>
-#undef REQUIRE_PLUGIN
-#include <donator>
 
-#define PLUGIN_VERSION "1.2.3"
+#define PLUGIN_VERSION "1.2.1"
 #define PLUGIN_NAME "Jetpack Plus (Bling)"
 
 #define MAX_JETPACK_TYPES 64
@@ -35,10 +32,6 @@ public Plugin:myinfo =
     version = PLUGIN_VERSION,
     url = "https://github.com/CrimsonTautology/sm_jetpack_plus"
 };
-
-new Handle:g_Cvar_DonatorsOnly = INVALID_HANDLE;
-
-new bool:g_DonatorLibraryExists = false;
 
 //Player options
 new Handle:g_Cookie_SelectedJetpack = INVALID_HANDLE;
@@ -57,12 +50,10 @@ public OnPluginStart()
     LoadTranslations("jetpack_plus.phrases");
 
     CreateConVar("sm_jetpack_bling_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
-    g_Cvar_DonatorsOnly = CreateConVar("sm_jetpack_donators_only", "0", "Whether only dontaors can change their jetpack bling");
 
     RegConsoleCmd("sm_bling", Command_Bling, "Change jetpack bling.");
 
     g_Cookie_SelectedJetpack = RegClientCookie("selected_jetpack", "Selected jetpack type", CookieAccess_Private);
-    g_DonatorLibraryExists = LibraryExists("donator.core");
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -71,30 +62,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
     MarkNativeAsOptional("Donator_RegisterMenuItem");
 
     return APLRes_Success;
-}
-
-public OnAllPluginsLoaded()
-{
-    if (g_DonatorLibraryExists)
-    {
-        Donator_RegisterMenuItem("Jetpack Effects", JetpackBlingMenu);
-    }
-}
-
-public OnLibraryRemoved(const String:name[])
-{
-    if (StrEqual(name, "donator.core"))
-    {
-        g_DonatorLibraryExists = false;
-    }
-}
-
-public OnLibraryAdded(const String:name[])
-{
-    if (StrEqual(name, "donator.core"))
-    {
-        g_DonatorLibraryExists = true;
-    }
 }
 
 public OnClientCookiesCached(client)
@@ -174,12 +141,6 @@ KvGetJetpack(Handle:kv, &index)
 
 public Action:Command_Bling(client, args)
 {
-    if(!DonatorCheck(client))
-    {
-        ReplyToCommand(client, "\x04%t", "donators_only");
-        return Plugin_Handled;
-    }
-
     if(client)
     {
         ChangeJetpackMenu(client);
@@ -231,15 +192,6 @@ ClearJetpackEffects(client)
     DeleteParticle(g_JetpackParticle[client]);
 }
 
-//True if client can use a donator action. If donations are not enabled this
-//will always be true, otherwise check if client is a donator.
-public bool:DonatorCheck(client)
-{
-    if(!g_DonatorLibraryExists || !GetConVarBool(g_Cvar_DonatorsOnly))
-        return true;
-    else
-        return IsPlayerDonator(client);
-}
 //Menus
 public DonatorMenu:JetpackBlingMenu(client) ChangeJetpackMenu(client);
 ChangeJetpackMenu(client)
