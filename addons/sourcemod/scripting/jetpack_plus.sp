@@ -16,7 +16,7 @@
 #include <smlib/entities>
 #include <tags>
 
-#define PLUGIN_VERSION "1.2.3"
+#define PLUGIN_VERSION "1.10.0"
 #define PLUGIN_NAME "Jetpack Plus"
 
 #define JETPACK_TAG "jetpack"
@@ -30,7 +30,7 @@ public Plugin:myinfo =
     author = "CrimsonTautology",
     description = "Let client's fly around by holding jump.",
     version = PLUGIN_VERSION,
-    url = "https://github.com/CrimsonTautology/sm_jetpack_plus"
+    url = "https://github.com/CrimsonTautology/sm-jetpack-plus"
 };
 
 

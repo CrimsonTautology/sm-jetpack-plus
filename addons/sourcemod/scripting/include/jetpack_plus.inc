@@ -13,7 +13,7 @@
 #endif
 #define _jetpack_plus_included_
 
-public SharedPlugin:__pl_jetpack_plus =
+public SharedPlugin __pl_jetpack_plus =
 {
     name = "jetpack_plus",
     file = "jetpack_plus.smx",
@@ -30,7 +30,7 @@ public SharedPlugin:__pl_jetpack_plus =
  * @param client        The client for which this jetpack started for
  * @return              Plugin_Handled to stop the event, Plugin_Continue to modify.
  */
-forward Action:OnStartJetpack(client);
+forward Action OnStartJetpack(int client);
 
 /**
  * @brief Called right after a jetpack starts for a client
@@ -38,7 +38,7 @@ forward Action:OnStartJetpack(client);
  * @param client        The client for which this jetpack started for
  * @noreturn
  */
-forward Action:OnStartJetpackPost(client);
+forward Action OnStartJetpackPost(int client);
 
 /**
  * @brief Called right before a jetpack stops for a client
@@ -46,7 +46,7 @@ forward Action:OnStartJetpackPost(client);
  * @param client        The client for which this jetpack stopped for
  * @return              Plugin_Handled to stop the event, Plugin_Continue to modify.
  */
-forward Action:OnStopJetpack(client);
+forward Action OnStopJetpack(int client);
 
 /**
  * @brief Called right after a jetpack stops for a client
@@ -54,7 +54,7 @@ forward Action:OnStopJetpack(client);
  * @param client        The client for which this jetpack stopped for
  * @return              Plugin_Handled to stop the event, Plugin_Continue to modify.
  */
-forward Action:OnStopJetpackPost(client);
+forward Action OnStopJetpackPost(int client);
 
 /**
  * @brief Called each frame for which a jetpack is active for a client
@@ -64,14 +64,14 @@ forward Action:OnStopJetpackPost(client);
  * @param force_stop    (byref) set to true to force the jetpack to stop
  * @noreturn
  */
-forward Action:OnJetpackStep(client, &Float:force, &bool:force_stop);
+forward Action OnJetpackStep(int client, float &force, bool &force_stop);
 
 /**
  * @brief Check if the jetpack plugin is enabled
  *
  * @return      True if enabled, False otherwise
  */
-native bool:AreJetpacksEnabled();
+native bool AreJetpacksEnabled();
 
 /**
  * @brief Check if a client is currently using a jetpack
@@ -79,4 +79,4 @@ native bool:AreJetpacksEnabled();
  * @param client            Client to check
  * @return      True if using, else false
  */
-native bool:IsClientUsingJetpack(client);
+native bool IsClientUsingJetpack(int client);
