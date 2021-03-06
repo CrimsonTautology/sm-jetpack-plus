@@ -14,15 +14,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup environment
+      - name: Set up environment
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - name: Setup sourcemod compiler
+      - name: Set up SourceMod compiler
         uses: rumblefrog/setup-sp@master
         with:
           version: '1.10'
 
-      - name: Compile sourcemod plugins and archive
+      - name: Compile SourceMod plugins and archive
         run: make release.tar.gz release.zip SPCOMP=spcomp
 
       - name: Create release
