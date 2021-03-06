@@ -30,7 +30,6 @@ There is no longer a need for a player to bind a key to +sm_jetpack.  To use the
 ### Console Variables
 | Command | Accepts | Values | Description |
 | --- | --- | --- | --- |
-| sm_foo | integer | 0-999 |  Does Foo |
 | sm_jetpack | boolean | 0-1 | Set to 1 to enable this plugin, 0 to disable |
 | sm_jetpack_force | float | any | Strength at which the jetpack pushes the player. |
 | sm_jetpack_jump_delay | float | any | The time in seconds the jump key needs to be pressed before the jetpack starts. |
