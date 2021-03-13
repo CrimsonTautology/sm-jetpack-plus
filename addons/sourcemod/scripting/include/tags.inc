@@ -14,12 +14,12 @@
  * @param tag            Tag string to append.
  * @noreturn
  */
-stock AddServerTag3(const String:tag[])
+stock void AddServerTag3(const char[] tag)
 {
-    decl String:current_tags[128];
-    new Handle:sv_tags = FindConVar("sv_tags");
+    char current_tags[128];
+    ConVar sv_tags = FindConVar("sv_tags");
 
-    if (sv_tags == INVALID_HANDLE)
+    if (sv_tags == null)
     {
         return;
     }
@@ -31,9 +31,9 @@ stock AddServerTag3(const String:tag[])
         return;
     }
 
-    decl String:new_tags[128];
+    char new_tags[128];
     Format(new_tags, sizeof(new_tags), "%s%s%s", current_tags, (current_tags[0]!=0)?",":"", tag);
-    new flags = GetConVarFlags(sv_tags);
+    int flags = GetConVarFlags(sv_tags);
     SetConVarFlags(sv_tags, flags & ~FCVAR_NOTIFY);
     SetConVarString(sv_tags, new_tags);
     SetConVarFlags(sv_tags, flags);
@@ -45,12 +45,12 @@ stock AddServerTag3(const String:tag[])
  * @param tag            Tag string to remove.
  * @noreturn
  */
-stock RemoveServerTag3(const String:tag[])
+stock void RemoveServerTag3(const char[] tag)
 {
-    decl String:new_tags[128];
-    new Handle:sv_tags = FindConVar("sv_tags");
+    char new_tags[128];
+    ConVar sv_tags = FindConVar("sv_tags");
 
-    if (sv_tags == INVALID_HANDLE)
+    if (sv_tags == null)
     {
         return;
     }
@@ -64,7 +64,7 @@ stock RemoveServerTag3(const String:tag[])
 
     ReplaceString(new_tags, sizeof(new_tags), tag, "");
     ReplaceString(new_tags, sizeof(new_tags), ",,", "");
-    new flags = GetConVarFlags(sv_tags);
+    int flags = GetConVarFlags(sv_tags);
     SetConVarFlags(sv_tags, flags & ~FCVAR_NOTIFY);
     SetConVarString(sv_tags, new_tags);
     SetConVarFlags(sv_tags, flags);

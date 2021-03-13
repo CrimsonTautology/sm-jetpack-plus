@@ -19,17 +19,17 @@ enum ParticleAttachmentType
  ** type (0 = not attached, 1 = normal attachment, 2 = head attachment). Allows
  ** offsets from the entity's position.
  ** ------------------------------------------------------------------------- */
-stock CreateParticle(const String:particleType[], Float:time=5.0, entity=0,
-        ParticleAttachmentType:attach=Attach,
-        const String:attachToBone[]="head",
-        const Float:offsetPos[3]=NULL_VECTOR,
-        const Float:offsetAng[3]=NULL_VECTOR,
-        &Handle:timerHandle=INVALID_HANDLE)
+stock int CreateParticle(const char[] particleType, float time=5.0, int entity=0,
+        ParticleAttachmentType attach=Attach,
+        const char[] attachToBone="head",
+        const float offsetPos[3]=NULL_VECTOR,
+        const float offsetAng[3]=NULL_VECTOR,
+        Handle& timerHandle=null)
 {
-    new particle = CreateEntityByName("info_particle_system");
+    int particle = CreateEntityByName("info_particle_system");
     if (particle > 0 && IsValidEdict(particle))
     {
-        decl Float:pos[3], Float:ang[3];
+        float pos[3], ang[3];
         if (entity > 0)
         {
             GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -51,7 +51,7 @@ stock CreateParticle(const String:particleType[], Float:time=5.0, entity=0,
 
         TeleportEntity(particle, pos, ang, NULL_VECTOR);
 
-        decl String:tName[32];
+        char tName[32];
         Format(tName, sizeof(tName), "target%i", entity);
         DispatchKeyValue(entity, "targetname", tName);
 
@@ -90,12 +90,12 @@ stock CreateParticle(const String:particleType[], Float:time=5.0, entity=0,
     return particle;
 }
 
-stock DeleteParticle(particleRef)
+stock void DeleteParticle(int particleRef)
 {
-    new particle = EntRefToEntIndex(particleRef);
+    int particle = EntRefToEntIndex(particleRef);
     if (particle > 0 && IsValidEntity(particle))
     {
-        new String:classname[32];
+        char classname[32];
         GetEdictClassname(particle, classname, sizeof(classname));
         if (StrEqual(classname, "info_particle_system", false))
         {
@@ -104,7 +104,7 @@ stock DeleteParticle(particleRef)
     }
 }
 
-public Action:DeleteParticles(Handle:timer, any:particleRef)
+public Action DeleteParticles(Handle timer, int particleRef)
 {
     DeleteParticle(particleRef);
     return Plugin_Stop;
